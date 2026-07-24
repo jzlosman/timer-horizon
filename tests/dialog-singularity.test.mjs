@@ -58,6 +58,8 @@ test('serializes singularity transactions and cleans up owned names', () => {
   assert.match(main, /let singularityTransition;/);
   assert.match(helper, /if \(singularityTransition\) \{\s+pendingSingularityAction = pendingAction;\s+return false;\s+\}/);
   assert.ok(helper.indexOf('if (singularityTransition) {') < helper.indexOf('document.startViewTransition'));
+  assert.match(helper, /if \(reducedMotion \|\| typeof document\.startViewTransition !== 'function'\) \{\s+fallback\(\);\s+return true;\s+\}/);
+  assert.ok(helper.indexOf('if (reducedMotion || typeof document.startViewTransition') < helper.indexOf('document.startViewTransition'));
   assert.match(helper, /const transaction = \{\};\s+singularityTransition = transaction;/);
   assert.match(cleanup, /if \(singularityTransition !== transaction\) return;\s+timer\.style\.viewTransitionName = '';\s+dialog\.style\.viewTransitionName = '';\s+singularityTransition = null;\s+const action = pendingSingularityAction;\s+pendingSingularityAction = null;\s+action\?\.\(\);/);
   assert.match(helper, /transition\.ready\.catch\(cleanup\);/);

@@ -206,7 +206,7 @@ function startSingularityTransition(prepare, start, update, fallback, pendingAct
   }
   prepare();
 
-  if (typeof document.startViewTransition !== 'function') {
+  if (reducedMotion || typeof document.startViewTransition !== 'function') {
     fallback();
     return true;
   }
