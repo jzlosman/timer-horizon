@@ -83,7 +83,7 @@ Color is physical light, not scattered accent paint. The field is almost neutral
 
 ## Layout
 
-The viewport is the composition. Its optical center sits slightly above the geometric midpoint: the timer owns a protected central void, two exterior lanes charge the upper perimeter, and the lower lanes give the current a long falloff. Microglyph currents cross the remaining field, including a sparse upper stratum that folds into the horizon. Desktop permits up to eight concurrent facts. Mobile preserves the singularity by assigning facts to exterior lanes rather than compressing them into cards.
+The viewport is the composition. Its optical center sits slightly above the geometric midpoint: the timer owns a protected central void, two exterior lanes charge the upper perimeter, and the lower lanes give the current a long falloff. Microglyphs arrive as a broad, all-direction infall volume—rather than a few thin rails—with a brighter upper stratum folding into the horizon. Desktop permits up to eight concurrent facts. Mobile preserves the singularity by assigning facts to exterior lanes rather than compressing them into cards.
 
 ## Elevation & Depth
 
@@ -108,7 +108,7 @@ No rounded containers. The event horizon is the recurring form: a broken ellipti
 ## Do's and Don'ts
 
 ### Do:
-- **Do** make streams first occupy the upper field, then bend, shear, accelerate, and disappear toward the event horizon.
+- **Do** make streams occupy the full field, then bend, shear, accelerate, and disappear toward the event horizon; never leave the current stranded on a few rails.
 - **Do** let the horizon breathe and send a bright seam around its rim; motion should feel orbital, not like a loading spinner.
 - **Do** let a pointer wake disturb only the abstract field, so interaction adds material response without compromising reading.
 - **Do** keep facts readable, rate-driven, and visibly separate from the abstract glyph field.

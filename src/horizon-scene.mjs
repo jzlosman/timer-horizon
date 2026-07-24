@@ -77,6 +77,15 @@ function glyphMaterial(atlas) {
           0.65 - cycle * 0.58 + sin(uTime * 0.06 + aSeed * 23.0) * 0.04
         );
         point = mix(point, upperPoint, upperStratum);
+        float volumeStratum = step(0.46, hash(aSeed * 47.6));
+        float volumeAngle = hash(aSeed * 29.7) * 6.2831853;
+        float volumeRadius = mix(0.52, 2.0, hash(aSeed * 13.1));
+        float collapse = pow(cycle, 0.78);
+        float volumeTurn = side * collapse * (0.55 + hash(aSeed * 19.8));
+        mat2 volumeRotation = mat2(cos(volumeTurn), -sin(volumeTurn), sin(volumeTurn), cos(volumeTurn));
+        vec2 volumeSource = vec2(cos(volumeAngle) * volumeRadius, sin(volumeAngle) * volumeRadius * 0.72);
+        vec2 volumePoint = volumeRotation * volumeSource * (1.0 - collapse);
+        point = mix(point, volumePoint, volumeStratum);
         point.y += uHorizonOffset + sin(uTime * 0.08 + aSeed * 31.0) * 0.026;
         vec2 wakeDelta = point - uPointer;
         float wake = exp(-dot(wakeDelta, wakeDelta) * 11.0) * uPointerEnergy;
@@ -87,9 +96,9 @@ function glyphMaterial(atlas) {
         float fadeIn = smoothstep(0.0, 0.08, cycle);
         float fadeOut = 1.0 - smoothstep(0.76, 1.0, cycle);
         vGlyph = aGlyph;
-        vAlpha = (0.18 + aDepth * 0.46 + heat * 0.16) * fadeIn * fadeOut * mix(1.0, 0.78, upperStratum);
+        vAlpha = (0.18 + aDepth * 0.46 + heat * 0.16) * fadeIn * fadeOut * mix(1.0, 0.78, upperStratum) * mix(1.0, 0.9, volumeStratum);
         vHeat = heat;
-        gl_PointSize = (1.8 + aDepth * 4.8 + heat * 1.4 + upperStratum * 1.1) * uPixelRatio;
+        gl_PointSize = (1.8 + aDepth * 4.8 + heat * 1.4 + upperStratum * 1.1) * mix(1.0, 0.94, volumeStratum) * uPixelRatio;
         gl_Position = vec4(point, 0.0, 1.0);
       }
     `,
@@ -160,7 +169,7 @@ export function createHorizonScene(canvas, { reducedMotion = false, onContextLos
   const scene = new THREE.Scene();
   const camera = new THREE.Camera();
   const atlas = glyphAtlas();
-  const count = glyphCountForDensity(window.innerWidth < 700 ? 4000 : 14000, false);
+  const count = glyphCountForDensity(window.innerWidth < 700 ? 7000 : 24000, false);
   const geometry = new THREE.BufferGeometry();
   geometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array(count * 3), 3));
   geometry.setAttribute('aSeed', new THREE.BufferAttribute(Float32Array.from({ length: count }, () => Math.random()), 1));
