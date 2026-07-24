@@ -18,7 +18,7 @@ test('renders and animates an arriving conjunction without affecting reduced mot
   const renderFacts = block(main, /function renderFacts\(now\) \{([\s\S]*?)\n\}\n\nfunction summon/);
   assert.match(createFactNode, /const conjunction = document\.createElement\('span'\);\s+conjunction\.className = 'fact-conjunction';\s+conjunction\.setAttribute\('aria-hidden', 'true'\);\s+conjunction\.addEventListener\('animationend', \(\) => element\.classList\.remove\('is-arriving'\)\);/);
   assert.match(createFactNode, /factBody\.append\(value, unit, conjunction\);/);
-  assert.match(renderFacts, /if \(arrivalPulse > 0\) node\.classList\.add\('is-arriving'\);/);
+  assert.match(renderFacts, /if \(arrivalPulse > 0 && !node\.dataset\.conjunctionStarted\) \{\s+node\.dataset\.conjunctionStarted = 'true';\s+node\.classList\.add\('is-arriving'\);\s+\}/);
   assert.doesNotMatch(renderFacts, /classList\.toggle\('is-arriving'/);
 
   const animations = [...styles.matchAll(/([^{}]+)\{([^{}]*animation:\s*fact-conjunction\s+([\d.]+)s[^{}]*)\}/g)];

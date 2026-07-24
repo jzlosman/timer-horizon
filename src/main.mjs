@@ -122,7 +122,10 @@ function renderFacts(now) {
     const position = factPosition(active, now);
     const visualArrivalAt = active.bornAt + (active.expiresAt - active.bornAt) * (position.enterAt + 0.12);
     const arrivalPulse = reducedMotion ? 0 : factArrivalPulse(visualArrivalAt, now);
-    if (arrivalPulse > 0) node.classList.add('is-arriving');
+    if (arrivalPulse > 0 && !node.dataset.conjunctionStarted) {
+      node.dataset.conjunctionStarted = 'true';
+      node.classList.add('is-arriving');
+    }
     const [factBody, explainer] = node.children;
     const [value, unit] = factBody.children;
     const lastUpdate = Number(node.dataset.valueUpdatedAt || 0);
