@@ -4,7 +4,7 @@
 
 **Goal:** Build a dependency-light WebGL time experience in which a human-duration timer anchors an abstract glyph current and live rate facts fall into a luminous event horizon.
 
-**Architecture:** A static ES-module app separates deterministic fact math from the browser scene. A Three.js point field uses a shader for the moving glyph texture and accretion-ring glow; semantic HTML renders the timer, interactive facts, and start-time dialog above it. Facts load from local JSON and source fields remain optional until a dedicated research pass.
+**Architecture:** A static ES-module app separates deterministic fact math from the browser scene. A Three.js point field uses a shader for the moving glyph texture and accretion-ring glow; semantic HTML renders the timer, interactive facts, and start-time dialog above it. The scene is progressive enhancement: a WebGL failure or reduced-motion preference leaves the complete DOM experience intact. Facts load from local JSON and source fields remain optional until a dedicated research pass.
 
 **Tech Stack:** HTML, CSS, native ES modules, Node built-in test runner, Three.js ESM CDN import.
 
@@ -28,7 +28,7 @@ Expected: FAIL because `src/fact-engine.mjs` does not exist.
 
 **Step 3: Write minimal implementation**
 
-Implement only the duration formatter, rate calculation, number formatter, and non-repeating fact selection helpers.
+Implement only the duration formatter, rate calculation, number formatter, and non-repeating fact selection helpers. Pass elapsed values and selection randomness in as arguments so all behavior remains deterministic under test.
 
 **Step 4: Run test to verify it passes**
 
@@ -59,7 +59,7 @@ Expected: FAIL because `src/facts.json` does not exist.
 
 **Step 3: Write minimal implementation**
 
-Create 40 varied approximate-rate records across cosmic motion, planetary processes, biology, infrastructure, culture, and the web. Mark source properties `null` rather than fabricating research citations.
+Create 40 varied approximate-rate records across cosmic motion, planetary processes, biology, infrastructure, culture, and the web. Mark source properties `null` rather than fabricating research citations; such facts render as text, not inert links.
 
 **Step 4: Run test to verify it passes**
 
@@ -91,7 +91,7 @@ Expected: FAIL because `src/scene-math.mjs` does not exist.
 
 **Step 3: Write minimal implementation**
 
-Implement deterministic particle-position helpers. Use them from a Three.js renderer with one custom point shader, an additive ember ring, resize support, and a Canvas 2D fallback.
+Implement deterministic particle-position helpers. Use them from an optional Three.js renderer (pinned CDN version) with one custom point shader, an additive ember ring, resize support, and context-loss cleanup. On WebGL failure, apply a `no-webgl` class and keep the DOM surface intact; do not build a second Canvas renderer.
 
 **Step 4: Run test to verify it passes**
 
@@ -115,7 +115,7 @@ git commit -m "feat: add event horizon particle field"
 
 **Step 1: Write the failing test**
 
-Test that a spawned fact has a 30–60 second lifetime, uses its rate-derived number for a supplied elapsed duration, and does not duplicate an active fact.
+Test that a spawned fact has a 30–60 second lifetime, uses its rate-derived number for a supplied elapsed duration, does not duplicate an active fact, and the initial state can maintain at least four facts.
 
 **Step 2: Run test to verify it fails**
 
@@ -124,7 +124,7 @@ Expected: FAIL because fact lifecycle helpers do not exist.
 
 **Step 3: Write minimal implementation**
 
-Build the full viewport layout: stable human-language timer button, live fact links, custom start-time dialog, empty-space summon, accessible keyboard behavior, source-aware fact links, and reduced-motion state.
+Build the full viewport layout: stable human-language timer button, four initial facts, 4–8 fact maintenance, custom start-time dialog, empty-space summon, accessible keyboard behavior, source-aware fact links, and reduced-motion state. The timer button opens a labelled native dialog; validate start time, restore focus on close, and keep changing values out of an assertive live region.
 
 **Step 4: Run test to verify it passes**
 
@@ -151,7 +151,7 @@ Expected: all checks pass.
 
 **Step 2: Inspect the app at desktop and mobile widths**
 
-Serve the static app, inspect the WebGL and fallback states, then test the timer modal, empty-space summon, keyboard focus, reduced-motion mode, and a long custom duration.
+Serve the static app, inspect the WebGL and no-WebGL states, then test the timer modal (focus, Escape, invalid/future time, restore focus), empty-space summon, keyboard focus, reduced-motion mode, and a long custom duration.
 
 **Step 3: Run the Impeccable detector once**
 
