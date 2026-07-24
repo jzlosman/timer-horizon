@@ -49,4 +49,12 @@ test('progressively morphs the timer through the start dialog', () => {
   assert.match(styles, /@keyframes timer-singularity-reform\s*\{[\s\S]*clip-path:[\s\S]*opacity:[\s\S]*filter:[\s\S]*transform:/);
   assert.match(styles, /#start-dialog\[open\]\s*\{[^}]*animation:/);
   assert.match(styles, /#start-dialog\[open\]::backdrop\s*\{[^}]*backdrop-filter:\s*blur\(/);
+
+  const reducedMotion = block(styles, /@media \(prefers-reduced-motion: reduce\) \{([\s\S]*?)\n\}/);
+  for (const selector of ['::view-transition-old(timer-singularity)', '::view-transition-new(timer-singularity)']) {
+    assert.match(
+      reducedMotion,
+      new RegExp(`${selector.replace(/[()]/g, '\\$&')}\\s*(?:,\\s*[^{}]+)?\\{\\s*animation:\\s*none\\s*!important;\\s*\\}`),
+    );
+  }
 });

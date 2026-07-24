@@ -344,6 +344,7 @@ button { cursor: pointer; }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; scroll-behavior: auto !important; transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; }
+  ::view-transition-old(timer-singularity), ::view-transition-new(timer-singularity) { animation: none !important; }
   #field { display: none; }
   .fallback-ring { opacity: 0.65; }
 }
