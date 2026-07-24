@@ -42,6 +42,7 @@ function glyphMaterial(atlas) {
       uColumns: { value: atlas.columns },
       uRows: { value: atlas.rows },
       uHorizonOffset: { value: 0.11 },
+      uAspect: { value: window.innerWidth / window.innerHeight },
       uPointer: { value: new THREE.Vector2(2, 2) },
       uPointerVelocity: { value: new THREE.Vector2() },
       uPointerEnergy: { value: 0 },
@@ -56,6 +57,7 @@ function glyphMaterial(atlas) {
       uniform float uTime;
       uniform float uPixelRatio;
       uniform float uHorizonOffset;
+      uniform float uAspect;
       uniform vec2 uPointer;
       uniform vec2 uPointerVelocity;
       uniform float uPointerEnergy;
@@ -92,13 +94,16 @@ function glyphMaterial(atlas) {
         vec2 wakeDirection = normalize(wakeDelta + vec2(0.0001));
         vec2 wakeTangent = vec2(-wakeDirection.y, wakeDirection.x);
         point += wakeDirection * wake * 0.075 + wakeTangent * wake * 0.025 + uPointerVelocity * wake * 0.28;
+        vec2 voidPoint = (point - vec2(0.0, uHorizonOffset)) * 0.5;
+        voidPoint.x *= uAspect * 0.58;
+        float voidMask = smoothstep(0.225, 0.25, length(voidPoint));
         float heat = 1.0 - smoothstep(0.12, 0.54, radius);
         float fadeIn = smoothstep(0.0, 0.08, cycle);
         float fadeOut = 1.0 - smoothstep(0.76, 1.0, cycle);
         vGlyph = aGlyph;
-        vAlpha = (0.18 + aDepth * 0.46 + heat * 0.16) * fadeIn * fadeOut * mix(1.0, 0.78, upperStratum) * mix(1.0, 0.9, volumeStratum);
+        vAlpha = (0.18 + aDepth * 0.46 + heat * 0.16) * fadeIn * fadeOut * voidMask * mix(1.0, 0.78, upperStratum) * mix(1.0, 0.9, volumeStratum);
         vHeat = heat;
-        gl_PointSize = (1.8 + aDepth * 4.8 + heat * 1.4 + upperStratum * 1.1) * mix(1.0, 0.94, volumeStratum) * uPixelRatio;
+        gl_PointSize = (3.0 + aDepth * 7.2 + heat * 2.0 + upperStratum * 1.5) * mix(1.0, 0.94, volumeStratum) * uPixelRatio;
         gl_Position = vec4(point, 0.0, 1.0);
       }
     `,
@@ -193,8 +198,10 @@ export function createHorizonScene(canvas, { reducedMotion = false, onContextLos
     pointerEnergy = 1;
   };
   const resize = () => {
+    const aspect = window.innerWidth / window.innerHeight;
     renderer.setSize(window.innerWidth, window.innerHeight, false);
-    ring.material.uniforms.uAspect.value = window.innerWidth / window.innerHeight;
+    points.material.uniforms.uAspect.value = aspect;
+    ring.material.uniforms.uAspect.value = aspect;
   };
   const animate = () => {
     if (!active) return;

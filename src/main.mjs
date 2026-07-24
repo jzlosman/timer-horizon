@@ -40,37 +40,39 @@ function formatFactValue(fact, seconds) {
 }
 
 function factPosition(active, now) {
-  const progress = reducedMotion ? 0 : Math.min(1, Math.max(0, (now - active.bornAt) / (active.expiresAt - active.bornAt)));
-  const fade = reducedMotion ? 1 : Math.min(progress / 0.12, (1 - progress) / 0.16, 1);
+  const progress = reducedMotion ? 0.55 : Math.min(1, Math.max(0, (now - active.bornAt) / (active.expiresAt - active.bornAt)));
+  const opacityFor = (lane) => reducedMotion ? 1 : Math.max(0, Math.min((progress - lane.enterAt) / 0.16, (0.98 - progress) / 0.1, 1));
 
   if (window.innerWidth < 700) {
     const lanes = [
-      { x: 50, y: 17, dx: -5, dy: 5 }, { x: 90, y: 28, dx: -7, dy: 3 },
-      { x: 10, y: 72, dx: 7, dy: -3 }, { x: 50, y: 84, dx: 3, dy: -5 },
-      { x: 18, y: 28, dx: 7, dy: 5 }, { x: 82, y: 72, dx: -7, dy: -5 },
-      { x: 31, y: 14, dx: 6, dy: 7 }, { x: 69, y: 88, dx: -6, dy: -8 },
+      { x: -10, y: 16, targetX: 25, targetY: 24, side: 'left', enterAt: 0.2 }, { x: 110, y: 18, targetX: 75, targetY: 24, side: 'right', enterAt: 0.2 },
+      { x: -10, y: 76, targetX: 25, targetY: 65, side: 'left', enterAt: 0.2 }, { x: 110, y: 76, targetX: 75, targetY: 65, side: 'right', enterAt: 0.2 },
+      { x: 34, y: -10, targetX: 42, targetY: 24, side: 'center', enterAt: 0.38 }, { x: 66, y: -10, targetX: 58, targetY: 24, side: 'center', enterAt: 0.38 },
+      { x: 38, y: 110, targetX: 45, targetY: 65, side: 'center', enterAt: 0.4 }, { x: 62, y: 110, targetX: 55, targetY: 65, side: 'center', enterAt: 0.4 },
     ];
     const lane = lanes[active.slot ?? 0];
     return {
-      x: lane.x + lane.dx * progress,
-      y: lane.y + lane.dy * progress,
-      opacity: Math.max(0, fade),
+      x: lane.x + (lane.targetX - lane.x) * progress,
+      y: lane.y + (lane.targetY - lane.y) * progress,
+      opacity: opacityFor(lane),
       angle: `${(active.seed - 0.5) * 3}deg`,
+      side: lane.side,
     };
   }
 
   const lanes = [
-    { x: 24, y: 20, dx: 11, dy: 12 }, { x: 76, y: 24, dx: -12, dy: 10 },
-    { x: 18, y: 68, dx: 16, dy: -8 }, { x: 82, y: 71, dx: -16, dy: -10 },
-    { x: 43, y: 10, dx: 3, dy: 21 }, { x: 58, y: 86, dx: -3, dy: -22 },
-    { x: 8, y: 42, dx: 20, dy: 2 }, { x: 92, y: 45, dx: -20, dy: 0 },
+    { x: -10, y: 17, targetX: 30, targetY: 32, side: 'left', enterAt: 0.2 }, { x: 110, y: 19, targetX: 70, targetY: 32, side: 'right', enterAt: 0.2 },
+    { x: -10, y: 75, targetX: 30, targetY: 58, side: 'left', enterAt: 0.2 }, { x: 110, y: 75, targetX: 70, targetY: 58, side: 'right', enterAt: 0.2 },
+    { x: 41, y: -10, targetX: 46, targetY: 22, side: 'center', enterAt: 0.38 }, { x: 59, y: -10, targetX: 54, targetY: 22, side: 'center', enterAt: 0.38 },
+    { x: 43, y: 110, targetX: 47, targetY: 67, side: 'center', enterAt: 0.4 }, { x: 57, y: 110, targetX: 53, targetY: 67, side: 'center', enterAt: 0.4 },
   ];
   const lane = lanes[active.slot ?? 0];
   return {
-    x: lane.x + lane.dx * progress,
-    y: lane.y + lane.dy * progress,
-    opacity: Math.max(0, fade),
+    x: lane.x + (lane.targetX - lane.x) * progress,
+    y: lane.y + (lane.targetY - lane.y) * progress,
+    opacity: opacityFor(lane),
     angle: `${(active.seed - 0.5) * 3}deg`,
+    side: lane.side,
   };
 }
 
@@ -120,7 +122,7 @@ function renderFacts(now) {
     const position = factPosition(active, now);
     node.style.left = `${position.x}%`;
     node.style.top = `${position.y}%`;
-    node.dataset.side = position.x < 50 ? 'left' : 'right';
+    node.dataset.side = position.side;
     node.style.setProperty('--fact-opacity', position.opacity);
     node.style.setProperty('--fact-angle', position.angle);
   });

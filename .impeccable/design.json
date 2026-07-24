@@ -46,13 +46,13 @@
   ],
   "narrative": {
     "northStar": "The Observatory Edition",
-    "overview": "Timer Horizon is an after-hours scientific instrument: a full-screen typographic current collapsing toward a luminous central event horizon. The central duration is the only calm, human-scale object. Everything else—abstract glyphs, living figures, and light—moves because the world is larger than the visitor's clock.",
-    "keyCharacteristics": ["A composed duration inside a breathing accretion ring.", "A soot-dark field, mineral text, and hot stellar light.", "A broad, all-direction glyph infall, a precessing rim, a cursor wake, and a resilient HTML content layer.", "No cards, graph furniture, terminal tropes, or chrome-heavy controls."],
+    "overview": "Timer Horizon is an after-hours scientific instrument: a full-screen typographic current collapsing toward a luminous central event horizon. The central duration is the only calm, human-scale object inside an otherwise black core. Everything else—abstract glyphs, living figures, and light—arrives from beyond the field and vanishes at the rim.",
+    "keyCharacteristics": ["A composed duration inside a breathing accretion ring.", "A soot-dark field, mineral text, and hot stellar light.", "A broad, readable letter-and-number infall, a precessing rim, a cursor wake, and a resilient HTML content layer.", "No cards, graph furniture, terminal tropes, or chrome-heavy controls."],
     "rules": [
       { "name": "The One-Star Rule", "body": "The event horizon is the only major saturated form. Facts can borrow its pale heat; nothing else competes with it. Its breathing rim and precessing seam keep that focal point alive.", "section": "colors" },
       { "name": "The Human-Clock Rule", "body": "The duration always uses words such as 5 minutes, 12 seconds, never a digit-only stopwatch.", "section": "typography" }
     ],
-    "dos": ["Do make streams occupy the full field, then bend, shear, accelerate, and disappear toward the event horizon.", "Do keep facts readable, rate-driven, and visibly separate from the abstract glyph field.", "Do preserve the central duration and accessible content when effects are unavailable."],
-    "donts": ["Don't render fake code, terminal windows, charts, HUD brackets, or literal black-hole imagery.", "Don't use rainbow color, green-on-black hacker styling, or multiple glowing focal points.", "Don't distort the central timer or place moving facts over it."]
+    "dos": ["Do make readable glyph streams occupy the full field, then bend, shear, accelerate, and disappear at the event horizon.", "Do keep facts readable, rate-driven, and visibly separate from the abstract glyph field.", "Do preserve the central duration and accessible content when effects are unavailable."],
+    "donts": ["Don't render fake code, terminal windows, charts, HUD brackets, or literal black-hole imagery.", "Don't use rainbow color, green-on-black hacker styling, or multiple glowing focal points.", "Don't distort the central timer or allow glyphs or facts inside the black core."]
   }
 }

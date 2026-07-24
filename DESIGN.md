@@ -41,7 +41,7 @@ components:
 
 Timer Horizon is an after-hours scientific instrument: a full-screen typographic current collapsing toward a luminous central event horizon. The central duration is the only calm, human-scale object. Everything else—abstract glyphs, living figures, and light—moves because the world is larger than the visitor's clock.
 
-The experience is dense but never dashboard-like. Motion earns the spectacle. Facts are briefly legible bodies travelling within the field; the background is intentionally meaningless texture, never pseudo-code or telemetry.
+The experience is dense but never dashboard-like. Motion earns the spectacle. Facts arrive from beyond the viewport, travel toward the rim, and vanish before crossing it; the background is intentionally meaningless texture, never pseudo-code or telemetry.
 
 **Key Characteristics:**
 - A plain-language duration inside a living accretion ring.
@@ -83,7 +83,7 @@ Color is physical light, not scattered accent paint. The field is almost neutral
 
 ## Layout
 
-The viewport is the composition. Its optical center sits slightly above the geometric midpoint: the timer owns a protected central void, two exterior lanes charge the upper perimeter, and the lower lanes give the current a long falloff. Microglyphs arrive as a broad, all-direction infall volume—rather than a few thin rails—with a brighter upper stratum folding into the horizon. Desktop permits up to eight concurrent facts. Mobile preserves the singularity by assigning facts to exterior lanes rather than compressing them into cards.
+The viewport is the composition. Its optical center sits slightly above the geometric midpoint: the timer owns a protected central void, fact paths begin beyond the frame and terminate at the visible rim, and the lower lanes give the current a long falloff. Microglyphs arrive as a broad, all-direction infall volume—rather than a few thin rails—with a brighter upper stratum folding into the horizon. Desktop permits up to eight concurrent facts. Mobile preserves the singularity by assigning facts to exterior lanes rather than compressing them into cards.
 
 ## Elevation & Depth
 
@@ -91,7 +91,7 @@ There are no panels or conventional shadows. Depth comes from particle parallax,
 
 ## Shapes
 
-No rounded containers. The event horizon is the recurring form: a broken elliptical ring with a bright inner edge, a looser dust band, and an irregular orbit. The native start-time dialog is an exception: a flat rectangular sheet with a fine edge, not a floating card.
+No rounded containers. The event horizon is the recurring form: a broken elliptical rim around an entirely black core, with a looser dust band and an irregular orbit. The timer is the only content permitted inside the core. The native start-time dialog is an exception: a flat rectangular sheet with a fine edge, not a floating card.
 
 ## Components
 
@@ -108,7 +108,9 @@ No rounded containers. The event horizon is the recurring form: a broken ellipti
 ## Do's and Don'ts
 
 ### Do:
-- **Do** make streams occupy the full field, then bend, shear, accelerate, and disappear toward the event horizon; never leave the current stranded on a few rails.
+- **Do** make streams occupy the full field, then bend, shear, accelerate, and disappear at the event horizon; never leave the current stranded on a few rails.
+- **Do** make glyphs large enough to read as abstract letters and numbers at a glance.
+- **Do** keep the core absolutely black—facts and glyphs vanish at the rim, leaving the timer alone.
 - **Do** let the horizon breathe and send a bright seam around its rim; motion should feel orbital, not like a loading spinner.
 - **Do** let a pointer wake disturb only the abstract field, so interaction adds material response without compromising reading.
 - **Do** keep facts readable, rate-driven, and visibly separate from the abstract glyph field.
