@@ -8,6 +8,10 @@ export function factExplainer({ label, unit }) {
   return `${label} · ${unit}`;
 }
 
+export function valueUpdateInterval(seed) {
+  return 3_000 + Math.floor(seed * 2_000);
+}
+
 export function formatFactValue({ format, decimalPlaces }, value) {
   const formatter = new Intl.NumberFormat('en-US', {
     maximumFractionDigits: decimalPlaces,

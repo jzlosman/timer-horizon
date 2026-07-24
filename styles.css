@@ -143,9 +143,9 @@ button { cursor: pointer; }
 #facts { inset: 0; pointer-events: none; position: absolute; z-index: 2; }
 
 .fact {
-  align-items: center;
-  display: flex;
-  gap: clamp(0.45rem, 0.8vw, 0.8rem);
+  display: grid;
+  gap: 0.3rem;
+  max-inline-size: min(16rem, 22vw);
   opacity: var(--fact-opacity, 1);
   pointer-events: auto;
   position: absolute;
@@ -155,9 +155,11 @@ button { cursor: pointer; }
 }
 
 .fact, .fact:visited { color: var(--mineral); text-decoration: none; }
-.fact[data-side="left"] { text-align: left; transform: translate(0, -50%) rotate(var(--fact-angle, 0deg)); }
-.fact[data-side="right"] { flex-direction: row-reverse; text-align: right; transform: translate(-100%, -50%) rotate(var(--fact-angle, 0deg)); }
-.fact[data-side="right"] .fact-value { text-align: start; }
+.fact[data-side="left"] { justify-items: start; text-align: left; transform: translate(0, -50%) rotate(var(--fact-angle, 0deg)); }
+.fact[data-side="right"] { justify-items: end; text-align: right; transform: translate(-100%, -50%) rotate(var(--fact-angle, 0deg)); }
+.fact[data-side="center"] { justify-items: center; text-align: center; }
+.fact[data-side="right"] .fact-value { text-align: end; }
+.fact[data-side="center"] .fact-value { text-align: center; }
 .fact[data-linked="true"]:hover .fact-explainer, .fact[data-linked="true"]:focus-visible .fact-explainer { color: #fff7e8; text-decoration: underline; text-decoration-color: var(--gold); text-underline-offset: 0.28em; }
 .fact[data-linked="true"]:focus-visible { outline: 1px solid var(--gold); outline-offset: 0.45rem; }
 
@@ -174,7 +176,7 @@ button { cursor: pointer; }
   line-height: 1;
   min-inline-size: 0;
   position: relative;
-  text-align: end;
+  text-align: start;
   text-shadow: 0 0 1.8rem color-mix(in srgb, var(--ember) 30%, transparent);
   white-space: nowrap;
 }
@@ -192,14 +194,16 @@ button { cursor: pointer; }
 }
 
 .fact-explainer {
-  color: color-mix(in srgb, var(--mineral) 82%, transparent);
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  color: color-mix(in srgb, var(--mineral-dim) 84%, transparent);
+  display: -webkit-box;
   font-size: clamp(0.62rem, 0.78vw, 0.76rem);
   font-weight: 500;
-  line-height: 1.2;
-  max-inline-size: min(18rem, 22vw);
+  line-height: 1.25;
+  max-inline-size: 100%;
   overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  text-wrap: pretty;
 }
 
 .field-instruction {
@@ -244,9 +248,9 @@ button { cursor: pointer; }
 @media (max-width: 700px) {
   :root { --ring-width: min(92vw, 31rem); }
   .wordmark { font-size: 0.55rem; }
-  .fact { gap: 0.4rem; max-width: none; }
+  .fact { gap: 0.25rem; max-inline-size: 9rem; }
   .fact-value { font-size: 1.15rem; }
-  .fact-explainer { font-size: 0.58rem; max-inline-size: 7.25rem; }
+  .fact-explainer { font-size: 0.58rem; }
   .field-instruction { font-size: 0.48rem; white-space: nowrap; }
 }
 

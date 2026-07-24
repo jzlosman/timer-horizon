@@ -1,7 +1,7 @@
 import facts from './facts.json' with { type: 'json' };
 
 import { formatDuration, valueForElapsed } from './fact-engine.mjs';
-import { FACT_VALUE_SLOT_CHARS, factExplainer, formatFactValue } from './fact-presentation.mjs';
+import { FACT_VALUE_SLOT_CHARS, factExplainer, formatFactValue, valueUpdateInterval } from './fact-presentation.mjs';
 import { ensureFactCount, MAX_FACTS, MIN_FACTS, spawnFact } from './fact-lifecycle.mjs';
 import { createHorizonScene } from './horizon-scene.mjs';
 import { localInputValue, parsePastLocalTime } from './time-control.mjs';
@@ -108,18 +108,21 @@ function renderFacts(now) {
   activeFacts.forEach((active) => {
     const node = nodes.get(active.fact.id) || createFactNode(active);
     const [value, explainer] = node.children;
-    const displayValue = formatFactValue(active.fact, valueForElapsed(active.fact, seconds));
-    if (value.textContent !== displayValue) {
+    const lastUpdate = Number(node.dataset.valueUpdatedAt || 0);
+    if (now - lastUpdate >= valueUpdateInterval(active.seed)) {
+      const previousValue = value.textContent;
+      const displayValue = formatFactValue(active.fact, valueForElapsed(active.fact, seconds));
       value.textContent = displayValue;
-      if (!reducedMotion) {
+      node.dataset.valueUpdatedAt = now;
+      if (previousValue && previousValue !== displayValue && !reducedMotion) {
         value.animate([
-          { filter: 'blur(2px)', opacity: 0.35, transform: 'scale(0.92)' },
+          { filter: 'blur(1.5px)', opacity: 0.5, transform: 'scale(0.96)' },
           { filter: 'blur(0)', opacity: 1, transform: 'scale(1)' },
-        ], { duration: 360, easing: 'cubic-bezier(0.16, 1, 0.3, 1)' });
+        ], { duration: 420, easing: 'cubic-bezier(0.16, 1, 0.3, 1)' });
       }
     }
     explainer.textContent = factExplainer(active.fact);
-    node.setAttribute('aria-label', `${active.fact.label}: ${displayValue} ${active.fact.unit}`);
+    node.setAttribute('aria-label', `${active.fact.label}: ${value.textContent} ${active.fact.unit}`);
     const position = factPosition(active, now);
     node.style.left = `${position.x}%`;
     node.style.top = `${position.y}%`;
