@@ -257,7 +257,7 @@ function openStartDialog() {
 }
 
 function closeStartDialog() {
-  if (!dialog.open) return;
+  if (!dialog.open && !singularityTransition) return;
   startSingularityTransition(
     () => {},
     () => { dialog.style.viewTransitionName = 'timer-singularity'; },

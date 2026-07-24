@@ -65,6 +65,13 @@ test('serializes singularity transactions and cleans up owned names', () => {
   assert.match(helper, /catch \{\s+cleanup\(\);\s+fallback\(\);/);
 });
 
+test('queues a close requested while the dialog-opening transition is active', () => {
+  const close = block(main, /function closeStartDialog\(\) \{([\s\S]*?)\n\}\n\ntimer\.addEventListener/);
+
+  assert.match(close, /if \(!dialog\.open && !singularityTransition\) return;/);
+  assert.match(close, /startSingularityTransition\([\s\S]*closeStartDialog,/);
+});
+
 test('replays the last terminal dialog action after a busy transition releases its lock', () => {
   assert.match(main, /let pendingSingularityAction;/);
   assert.match(main, /showStartDialog,\s+openStartDialog,/);
