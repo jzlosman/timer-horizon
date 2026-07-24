@@ -6,6 +6,7 @@ import {
   factArrivalPulse,
   glyphCountForDensity,
   gravitationalPull,
+  interpolateSceneTempo,
   sceneTempo,
 } from '../src/scene-math.mjs';
 
@@ -26,6 +27,11 @@ test('reduced motion lowers glyph density without removing the field', () => {
 test('a dilated scene moves at singularity tempo', () => {
   assert.equal(sceneTempo(false), 1);
   assert.equal(sceneTempo(true), 0.16);
+});
+
+test('scene tempo eases toward the dialog state instead of jumping', () => {
+  assert.equal(interpolateSceneTempo(1, true, 0.1), 0.916);
+  assert.equal(interpolateSceneTempo(0.16, false, 0.1), 0.244);
 });
 
 test('a fact emits one bounded orbital arrival pulse when it reaches its readable lane', () => {

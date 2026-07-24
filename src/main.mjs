@@ -185,6 +185,7 @@ function openStartDialog() {
   startError.textContent = '';
   startInput.max = localInputValue(Date.now());
   startInput.value = localInputValue(startedAt);
+  horizonScene?.setDilation(true);
   dialog.showModal();
   startInput.focus();
 }
@@ -197,6 +198,7 @@ timer.addEventListener('click', openStartDialog);
 cancelStart.addEventListener('click', closeStartDialog);
 
 dialog.addEventListener('close', () => {
+  horizonScene?.setDilation(false);
   if (restoreTimerFocus) timer.focus();
   restoreTimerFocus = false;
 });

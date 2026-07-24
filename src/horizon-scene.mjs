@@ -1,6 +1,6 @@
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js';
 
-import { glyphCountForDensity } from './scene-math.mjs';
+import { glyphCountForDensity, interpolateSceneTempo, sceneTempo } from './scene-math.mjs';
 
 const glyphCharacters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz+-=×÷<>/\\|[]{}()!?@#$%&*~^:;';
 const BODY_LIMIT = 8;
@@ -106,11 +106,11 @@ function glyphMaterial(atlas) {
           vec2 bodyDelta = point - uBodies[i];
           float bodyDistance = length(bodyDelta) + 0.0001;
           float orbit = uBodyStrength[i] * exp(-bodyDistance * bodyDistance * 52.0);
-          float arrival = uBodyPulse[i] * exp(-bodyDistance * bodyDistance * 10.0);
-          bodyOrbit = max(bodyOrbit, orbit + arrival * 0.4);
+          float arrivalLens = uBodyPulse[i] * exp(-bodyDistance * bodyDistance * 18.0);
+          bodyOrbit = max(bodyOrbit, orbit + arrivalLens * 0.5);
           vec2 bodyDirection = bodyDelta / bodyDistance;
           vec2 bodyTangent = vec2(-bodyDirection.y, bodyDirection.x);
-          point += bodyTangent * (orbit * 0.07 + arrival * 0.05) + bodyDirection * (orbit * 0.008 + arrival * 0.012);
+          point += bodyTangent * (orbit * 0.07 + arrivalLens * 0.09) + bodyDirection * (orbit * 0.008 + arrivalLens * 0.024);
         }
         vec2 voidPoint = (point - vec2(0.0, uHorizonOffset)) * 0.5;
         voidPoint.x *= uAspect * 0.58;
@@ -210,6 +210,8 @@ export function createHorizonScene(canvas, { reducedMotion = false, onContextLos
   let active = true;
   let rendering = false;
   let elapsed = 0;
+  let sceneTimeScale = sceneTempo(false);
+  let isDilated = false;
   let pointerEnergy = 0;
   const pointer = new THREE.Vector2(2, 2);
   const pointerVelocity = new THREE.Vector2();
@@ -228,7 +230,8 @@ export function createHorizonScene(canvas, { reducedMotion = false, onContextLos
   };
   const animate = () => {
     if (!rendering) return;
-    elapsed += clock.getDelta();
+    sceneTimeScale = interpolateSceneTempo(sceneTimeScale, isDilated, 0.08);
+    elapsed += clock.getDelta() * sceneTimeScale;
     pointerEnergy *= 0.92;
     pointerVelocity.multiplyScalar(0.88);
     points.material.uniforms.uTime.value = elapsed;
@@ -282,6 +285,9 @@ export function createHorizonScene(canvas, { reducedMotion = false, onContextLos
         bodyStrengthTargets[index] = body?.strength ?? 0;
         bodyPulseTargets[index] = body?.pulse ?? 0;
       }
+    },
+    setDilation(dilated) {
+      isDilated = Boolean(dilated);
     },
     destroy() {
       active = false;
