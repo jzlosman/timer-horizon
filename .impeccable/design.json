@@ -21,7 +21,8 @@
       { "name": "ring-opacity", "value": "800ms ease", "purpose": "WebGL-to-fallback ring transition." },
       { "name": "cursor-wake", "value": "shader-decayed pointer vector", "purpose": "A visual-only disturbance in the abstract glyph flow." },
       { "name": "rim-precession", "value": "continuous shader light seam", "purpose": "A slow orbital movement that keeps the horizon alive." },
-      { "name": "fact-materialization", "value": "420ms staggered every 3–5 seconds", "purpose": "Facts update quietly without a synchronized numerical churn." }
+      { "name": "fact-materialization", "value": "420ms staggered every 3–5 seconds", "purpose": "Facts update quietly without a synchronized numerical churn." },
+      { "name": "fact-orbital-arrival", "value": "900–1100ms bounded CSS orbit with a 1200ms shader pulse", "purpose": "A fact's first readable arrival visibly bends the local glyph current, then settles." }
     ],
     "breakpoints": [
       { "name": "mobile", "value": "700px" }

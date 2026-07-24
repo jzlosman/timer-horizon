@@ -87,7 +87,7 @@ The viewport is the composition. Its optical center sits slightly above the geom
 
 ## Elevation & Depth
 
-There are no panels or conventional shadows. Depth comes from particle parallax, a slow upper-to-horizon fall, velocity, fading, and the ring's additive bloom. The horizon itself breathes almost imperceptibly while a bright seam precesses around its rim. Each fact is a fixed-width numerical body with a small unit aligned to the number and a mineral-toned explainer beneath it: its digits materialize on a staggered three-to-five-second rhythm without moving the caption, while nearby glyphs bend into a brief orbital wake. A pointer creates a short wake in the abstract glyphs only—never in timer text, facts, or controls. The timer and fact layer are crisp semantic HTML above the visual field. On non-WebGL or reduced-motion devices, a still multi-band dust ring keeps the central form legible.
+There are no panels or conventional shadows. Depth comes from particle parallax, a slow upper-to-horizon fall, velocity, fading, and the ring's additive bloom. The horizon itself breathes almost imperceptibly while a bright seam precesses around its rim. Each fact is a fixed-width numerical body with a small unit aligned to the number and a mineral-toned explainer beneath it: when it reaches its readable orbital lane, its outline closes and releases one bounded glyph pulse; its digits later materialize on a staggered three-to-five-second rhythm without moving the caption. A pointer creates a short wake in the abstract glyphs only—never in timer text, facts, or controls. The timer and fact layer are crisp semantic HTML above the visual field. On non-WebGL or reduced-motion devices, a still multi-band dust ring keeps the central form legible.
 
 ## Shapes
 

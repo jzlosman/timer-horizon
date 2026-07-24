@@ -4,6 +4,7 @@ import { formatDuration, valueForElapsed } from './fact-engine.mjs';
 import { FACT_VALUE_SLOT_CHARS, factExplainer, factUnit, formatFactValue, valueUpdateInterval } from './fact-presentation.mjs';
 import { ensureFactCount, MAX_FACTS, MIN_FACTS, spawnFact } from './fact-lifecycle.mjs';
 import { createHorizonScene } from './horizon-scene.mjs';
+import { factArrivalPulse } from './scene-math.mjs';
 import { localInputValue, parsePastLocalTime } from './time-control.mjs';
 
 const body = document.body;
@@ -51,6 +52,7 @@ function factPosition(active, now) {
       opacity: opacityFor(lane),
       angle: `${(active.seed - 0.5) * 3}deg`,
       side: lane.side,
+      enterAt: lane.enterAt,
     };
   }
 
@@ -67,6 +69,7 @@ function factPosition(active, now) {
     opacity: opacityFor(lane),
     angle: `${(active.seed - 0.5) * 3}deg`,
     side: lane.side,
+    enterAt: lane.enterAt,
   };
 }
 
@@ -112,6 +115,10 @@ function renderFacts(now) {
   const bodies = [];
   activeFacts.forEach((active) => {
     const node = nodes.get(active.fact.id) || createFactNode(active);
+    const position = factPosition(active, now);
+    const visualArrivalAt = active.bornAt + (active.expiresAt - active.bornAt) * (position.enterAt + 0.12);
+    const arrivalPulse = reducedMotion ? 0 : factArrivalPulse(visualArrivalAt, now);
+    node.classList.toggle('is-arriving', arrivalPulse > 0);
     const [factBody, explainer] = node.children;
     const [value, unit] = factBody.children;
     const lastUpdate = Number(node.dataset.valueUpdatedAt || 0);
@@ -130,13 +137,17 @@ function renderFacts(now) {
     unit.textContent = factUnit(active.fact);
     explainer.textContent = factExplainer(active.fact);
     node.setAttribute('aria-label', `${active.fact.label}: ${value.textContent} ${active.fact.unit}`);
-    const position = factPosition(active, now);
     node.style.left = `${position.x}%`;
     node.style.top = `${position.y}%`;
     node.dataset.side = position.side;
     node.style.setProperty('--fact-opacity', position.opacity);
     node.style.setProperty('--fact-angle', position.angle);
-    bodies.push({ x: position.x, y: position.y, strength: position.opacity });
+    bodies.push({
+      x: position.x,
+      y: position.y,
+      strength: position.opacity,
+      pulse: arrivalPulse,
+    });
   });
   horizonScene?.setBodies(bodies);
 }

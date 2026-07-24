@@ -49,6 +49,7 @@ function glyphMaterial(atlas) {
       uPointerEnergy: { value: 0 },
       uBodies: { value: Array.from({ length: BODY_LIMIT }, () => new THREE.Vector2(2, 2)) },
       uBodyStrength: { value: new Float32Array(BODY_LIMIT) },
+      uBodyPulse: { value: new Float32Array(BODY_LIMIT) },
     },
     vertexShader: `
       attribute float aSeed;
@@ -66,6 +67,7 @@ function glyphMaterial(atlas) {
       uniform float uPointerEnergy;
       uniform vec2 uBodies[8];
       uniform float uBodyStrength[8];
+      uniform float uBodyPulse[8];
 
       float hash(float n) { return fract(sin(n) * 43758.5453123); }
 
@@ -104,10 +106,11 @@ function glyphMaterial(atlas) {
           vec2 bodyDelta = point - uBodies[i];
           float bodyDistance = length(bodyDelta) + 0.0001;
           float orbit = uBodyStrength[i] * exp(-bodyDistance * bodyDistance * 52.0);
-          bodyOrbit = max(bodyOrbit, orbit);
+          float arrival = uBodyPulse[i] * exp(-bodyDistance * bodyDistance * 10.0);
+          bodyOrbit = max(bodyOrbit, orbit + arrival * 0.4);
           vec2 bodyDirection = bodyDelta / bodyDistance;
           vec2 bodyTangent = vec2(-bodyDirection.y, bodyDirection.x);
-          point += bodyTangent * orbit * 0.07 + bodyDirection * orbit * 0.008;
+          point += bodyTangent * (orbit * 0.07 + arrival * 0.05) + bodyDirection * (orbit * 0.008 + arrival * 0.012);
         }
         vec2 voidPoint = (point - vec2(0.0, uHorizonOffset)) * 0.5;
         voidPoint.x *= uAspect * 0.58;
@@ -200,14 +203,17 @@ export function createHorizonScene(canvas, { reducedMotion = false, onContextLos
   const ring = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), ringMaterial());
   const bodyTargets = Array.from({ length: BODY_LIMIT }, () => new THREE.Vector2(2, 2));
   const bodyStrengthTargets = new Float32Array(BODY_LIMIT);
+  const bodyPulseTargets = new Float32Array(BODY_LIMIT);
   scene.add(points, ring);
 
   let frame;
   let active = true;
+  let rendering = false;
+  let elapsed = 0;
   let pointerEnergy = 0;
   const pointer = new THREE.Vector2(2, 2);
   const pointerVelocity = new THREE.Vector2();
-  const clock = new THREE.Clock();
+  const clock = new THREE.Clock(false);
   const handlePointerMove = ({ clientX, clientY }) => {
     const next = new THREE.Vector2((clientX / window.innerWidth) * 2 - 1, 1 - (clientY / window.innerHeight) * 2);
     pointerVelocity.copy(next).sub(pointer).clampLength(0, 0.36);
@@ -221,8 +227,8 @@ export function createHorizonScene(canvas, { reducedMotion = false, onContextLos
     ring.material.uniforms.uAspect.value = aspect;
   };
   const animate = () => {
-    if (!active) return;
-    const elapsed = clock.getElapsedTime();
+    if (!rendering) return;
+    elapsed += clock.getDelta();
     pointerEnergy *= 0.92;
     pointerVelocity.multiplyScalar(0.88);
     points.material.uniforms.uTime.value = elapsed;
@@ -232,23 +238,41 @@ export function createHorizonScene(canvas, { reducedMotion = false, onContextLos
     points.material.uniforms.uBodies.value.forEach((body, index) => {
       body.lerp(bodyTargets[index], 0.08);
       points.material.uniforms.uBodyStrength.value[index] += (bodyStrengthTargets[index] - points.material.uniforms.uBodyStrength.value[index]) * 0.08;
+      points.material.uniforms.uBodyPulse.value[index] += (bodyPulseTargets[index] - points.material.uniforms.uBodyPulse.value[index]) * 0.12;
     });
     ring.material.uniforms.uTime.value = elapsed;
     renderer.render(scene, camera);
+    if (rendering) frame = requestAnimationFrame(animate);
+  };
+  const startRendering = () => {
+    if (!active || rendering || document.hidden) return;
+    rendering = true;
+    clock.start();
     frame = requestAnimationFrame(animate);
+  };
+  const stopRendering = () => {
+    if (!rendering) return;
+    rendering = false;
+    clock.stop();
+    cancelAnimationFrame(frame);
+  };
+  const handleVisibilityChange = () => {
+    if (document.hidden) stopRendering();
+    else startRendering();
   };
   const handleContextLost = (event) => {
     event.preventDefault();
     active = false;
-    cancelAnimationFrame(frame);
+    stopRendering();
     onContextLost?.();
   };
 
   canvas.addEventListener('webglcontextlost', handleContextLost, { once: true });
+  document.addEventListener('visibilitychange', handleVisibilityChange);
   window.addEventListener('resize', resize);
   window.addEventListener('pointermove', handlePointerMove, { passive: true });
   resize();
-  animate();
+  startRendering();
 
   return {
     setBodies(bodies) {
@@ -256,11 +280,13 @@ export function createHorizonScene(canvas, { reducedMotion = false, onContextLos
         const body = bodies[index];
         bodyTargets[index].set(body ? body.x * 0.02 - 1 : 2, body ? 1 - body.y * 0.02 : 2);
         bodyStrengthTargets[index] = body?.strength ?? 0;
+        bodyPulseTargets[index] = body?.pulse ?? 0;
       }
     },
     destroy() {
       active = false;
-      cancelAnimationFrame(frame);
+      stopRendering();
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
       window.removeEventListener('resize', resize);
       window.removeEventListener('pointermove', handlePointerMove);
       canvas.removeEventListener('webglcontextlost', handleContextLost);
