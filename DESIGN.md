@@ -9,16 +9,16 @@ colors:
   gold: "#f4a83c"
 typography:
   display:
-    fontFamily: "Iowan Old Style, Baskerville, Georgia, serif"
-    fontSize: "clamp(2.8rem, 6.5vw, 6.6rem)"
-    fontWeight: 400
-    lineHeight: 0.92
-    letterSpacing: "-0.055em"
+    fontFamily: "Bodoni Moda, Baskerville, Georgia, serif"
+    fontSize: "clamp(3rem, 6.2vw, 6.4rem)"
+    fontWeight: 500
+    lineHeight: 0.86
+    letterSpacing: "-0.065em"
   body:
-    fontFamily: "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace"
-    fontSize: "clamp(0.66rem, 0.9vw, 0.86rem)"
-    fontWeight: 400
-    lineHeight: 1.45
+    fontFamily: "Familjen Grotesk, Helvetica Neue, Arial, sans-serif"
+    fontSize: "clamp(0.68rem, 0.9vw, 0.88rem)"
+    fontWeight: 450
+    lineHeight: 1.35
 rounded:
   none: "0"
 spacing:
@@ -37,7 +37,7 @@ components:
 
 ## Overview
 
-**Creative North Star: "The Planetary Totalizer"**
+**Creative North Star: "The Observatory Edition"**
 
 Timer Horizon is an after-hours scientific instrument: a full-screen typographic current collapsing toward a luminous central event horizon. The central duration is the only calm, human-scale object. Everything else—abstract glyphs, living figures, and light—moves because the world is larger than the visitor's clock.
 
@@ -68,10 +68,10 @@ Color is physical light, not scattered accent paint. The field is almost neutral
 
 ## Typography
 
-**Display Font:** Iowan Old Style with Baskerville and Georgia fallbacks.
-**Body Font:** The platform monospace stack.
+**Display Font:** Bodoni Moda with Baskerville and Georgia fallbacks.
+**Body Font:** Familjen Grotesk with a clean system sans fallback.
 
-**Character:** The clock reads like human language, not instrumentation. The fact layer is compact and technical, but not terminal-coded.
+**Character:** The clock reads like a composed inscription, not instrumentation. The fact layer is compact and scientific, but never terminal-coded.
 
 ### Hierarchy
 - **Display:** Owns only the central elapsed duration.
@@ -87,7 +87,7 @@ The viewport is the composition. Its optical center sits slightly above the geom
 
 ## Elevation & Depth
 
-There are no panels or conventional shadows. Depth comes from particle parallax, a slow upper-to-horizon fall, velocity, fading, and the ring's additive bloom. A pointer creates a short wake in the abstract glyphs only—never in timer text, facts, or controls. The timer and fact layer are crisp semantic HTML above the visual field. On non-WebGL or reduced-motion devices, a still multi-band dust ring keeps the central form legible.
+There are no panels or conventional shadows. Depth comes from particle parallax, a slow upper-to-horizon fall, velocity, fading, and the ring's additive bloom. The horizon itself breathes almost imperceptibly while a bright seam precesses around its rim. A pointer creates a short wake in the abstract glyphs only—never in timer text, facts, or controls. The timer and fact layer are crisp semantic HTML above the visual field. On non-WebGL or reduced-motion devices, a still multi-band dust ring keeps the central form legible.
 
 ## Shapes
 
@@ -109,6 +109,7 @@ No rounded containers. The event horizon is the recurring form: a broken ellipti
 
 ### Do:
 - **Do** make streams first occupy the upper field, then bend, shear, accelerate, and disappear toward the event horizon.
+- **Do** let the horizon breathe and send a bright seam around its rim; motion should feel orbital, not like a loading spinner.
 - **Do** let a pointer wake disturb only the abstract field, so interaction adds material response without compromising reading.
 - **Do** keep facts readable, rate-driven, and visibly separate from the abstract glyph field.
 - **Do** preserve the central duration and accessible content when effects are unavailable.

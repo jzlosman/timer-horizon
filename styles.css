@@ -6,7 +6,7 @@
   --ember: #ff4a0e;
   --gold: #f4a83c;
   --ring-width: min(39vw, 32rem);
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-family: 'Familjen Grotesk', 'Helvetica Neue', Arial, sans-serif;
 }
 
 * { box-sizing: border-box; }
@@ -35,6 +35,7 @@ button { cursor: pointer; }
 .wordmark {
   color: color-mix(in srgb, var(--mineral) 60%, transparent);
   font-size: 0.62rem;
+  font-weight: 600;
   left: clamp(1rem, 2.5vw, 2.4rem);
   letter-spacing: 0.28em;
   margin: 0;
@@ -116,20 +117,22 @@ button { cursor: pointer; }
 }
 
 #duration {
-  font-family: Iowan Old Style, Baskerville, Georgia, serif;
-  font-size: clamp(2.8rem, 6.5vw, 6.6rem);
-  font-weight: 400;
-  letter-spacing: -0.055em;
-  line-height: 0.92;
+  font-family: 'Bodoni Moda', Baskerville, Georgia, serif;
+  font-optical-sizing: auto;
+  font-size: clamp(3rem, 6.2vw, 6.4rem);
+  font-variant-numeric: lining-nums tabular-nums;
+  font-weight: 500;
+  letter-spacing: -0.065em;
+  line-height: 0.86;
   text-wrap: balance;
   text-shadow: 0 0 2.8rem color-mix(in srgb, var(--mineral) 12%, transparent);
 }
 
 .timer-caption {
   color: color-mix(in srgb, var(--mineral) 62%, transparent);
-  font-size: 0.6rem;
-  letter-spacing: 0.24em;
-  text-transform: uppercase;
+  font-size: 0.66rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
 }
 
 .timer:hover #duration, .timer:focus-visible #duration { color: #fff7e8; }
@@ -155,19 +158,19 @@ button { cursor: pointer; }
 .fact[data-linked="true"]:hover .fact-label, .fact[data-linked="true"]:focus-visible .fact-label { color: #fff7e8; text-decoration: underline; text-decoration-color: var(--gold); text-underline-offset: 0.36em; }
 .fact[data-linked="true"]:focus-visible { outline: 1px solid var(--gold); outline-offset: 0.45rem; }
 
-.fact-label { color: color-mix(in srgb, var(--mineral) 80%, transparent); display: block; font-size: clamp(0.66rem, 0.9vw, 0.86rem); letter-spacing: 0.01em; line-height: 1.45; }
-.fact-value { color: var(--gold); display: inline-block; font-family: Iowan Old Style, Baskerville, Georgia, serif; font-size: clamp(1.2rem, 2vw, 2.25rem); letter-spacing: -0.04em; line-height: 1.12; margin: 0.2rem 0.35rem 0 0; text-shadow: 0 0 1.8rem color-mix(in srgb, var(--ember) 30%, transparent); }
-.fact-unit { color: color-mix(in srgb, var(--mineral) 70%, transparent); font-size: clamp(0.59rem, 0.75vw, 0.72rem); line-height: 1.25; }
+.fact-label { color: color-mix(in srgb, var(--mineral) 80%, transparent); display: block; font-size: clamp(0.68rem, 0.9vw, 0.88rem); font-weight: 500; letter-spacing: 0.005em; line-height: 1.35; }
+.fact-value { color: var(--gold); display: inline-block; font-family: 'Bodoni Moda', Baskerville, Georgia, serif; font-size: clamp(1.25rem, 2vw, 2.3rem); font-variant-numeric: lining-nums tabular-nums; font-weight: 500; letter-spacing: -0.045em; line-height: 1.05; margin: 0.22rem 0.35rem 0 0; text-shadow: 0 0 1.8rem color-mix(in srgb, var(--ember) 30%, transparent); }
+.fact-unit { color: color-mix(in srgb, var(--mineral) 70%, transparent); font-size: clamp(0.62rem, 0.75vw, 0.74rem); font-weight: 500; line-height: 1.25; }
 
 .field-instruction {
   bottom: clamp(1rem, 3vw, 2.4rem);
   color: color-mix(in srgb, var(--mineral) 42%, transparent);
-  font-size: 0.55rem;
+  font-size: 0.64rem;
+  font-weight: 500;
   left: 50%;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.08em;
   margin: 0;
   position: absolute;
-  text-transform: uppercase;
   transform: translateX(-50%);
   transition: opacity 1.2s ease;
   z-index: 3;
@@ -188,7 +191,7 @@ button { cursor: pointer; }
 #start-dialog::backdrop { background: rgb(0 0 0 / 76%); }
 #start-dialog form { display: grid; gap: 1rem; }
 .dialog-kicker { color: var(--gold); font-size: 0.58rem; letter-spacing: 0.26em; margin: 0; text-transform: uppercase; }
-#dialog-title { font-family: Iowan Old Style, Baskerville, Georgia, serif; font-size: clamp(2rem, 5vw, 3.2rem); font-weight: 400; letter-spacing: -0.04em; line-height: 0.9; margin: 0.35rem 0 1.4rem; }
+#dialog-title { font-family: 'Bodoni Moda', Baskerville, Georgia, serif; font-optical-sizing: auto; font-size: clamp(2rem, 5vw, 3.2rem); font-weight: 500; letter-spacing: -0.055em; line-height: 0.86; margin: 0.35rem 0 1.4rem; }
 #start-dialog label { color: var(--mineral-dim); font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; }
 #start-time { background: transparent; border: 0; border-bottom: 1px solid color-mix(in srgb, var(--mineral) 35%, transparent); border-radius: 0; color: var(--mineral); min-height: 3rem; outline: 0; padding: 0.4rem 0; }
 #start-time:focus { border-bottom-color: var(--gold); }
@@ -208,7 +211,7 @@ button { cursor: pointer; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { scroll-behavior: auto !important; transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; }
+  *, *::before, *::after { animation: none !important; scroll-behavior: auto !important; transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; }
   #field { display: none; }
   .fallback-ring { opacity: 0.65; }
 }

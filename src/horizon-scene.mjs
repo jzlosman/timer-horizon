@@ -132,13 +132,18 @@ function ringMaterial() {
         p.x *= uAspect * 0.58;
         float angle = atan(p.y, p.x);
         float radius = length(p);
-        float turbulence = sin(angle * 8.0 + uTime * 0.38) * 0.005 + sin(angle * 21.0 - uTime * 0.21) * 0.002;
-        float rim = 1.0 - smoothstep(0.003, 0.018, abs(radius - 0.205 - turbulence));
-        float halo = 1.0 - smoothstep(0.015, 0.072, abs(radius - 0.205 - turbulence));
-        float brokenLight = 0.58 + sin(angle * 11.0 + uTime * 0.3) * 0.14 + sin(angle * 29.0 - uTime * 0.12) * 0.08;
+        float orbitalTime = uTime * 0.62;
+        float breathing = sin(uTime * 0.72) * 0.0035 + sin(uTime * 1.46) * 0.0012;
+        float turbulence = sin(angle * 8.0 + orbitalTime * 1.6) * 0.0075 + sin(angle * 21.0 - orbitalTime * 0.78) * 0.0034 + breathing;
+        float ringRadius = 0.205 + turbulence;
+        float rim = 1.0 - smoothstep(0.003, 0.018, abs(radius - ringRadius));
+        float halo = 1.0 - smoothstep(0.015, 0.072, abs(radius - ringRadius));
+        float seam = pow(max(0.0, sin(angle - orbitalTime - 0.35)), 10.0) * 0.36;
+        float brokenLight = 0.52 + sin(angle * 11.0 + orbitalTime * 1.9) * 0.15 + sin(angle * 29.0 - orbitalTime * 0.7) * 0.08 + seam;
         float innerHeat = 1.0 - smoothstep(0.188, 0.255, radius);
         vec3 ember = mix(vec3(0.92, 0.10, 0.015), vec3(1.0, 0.85, 0.56), innerHeat);
-        float alpha = rim * brokenLight * 0.92 + halo * 0.08;
+        ember = mix(ember, vec3(1.0, 0.93, 0.70), seam * 0.75);
+        float alpha = (rim * brokenLight * 0.92 + halo * 0.08) * (0.9 + sin(uTime * 0.72) * 0.1);
         gl_FragColor = vec4(ember, alpha);
       }
     `,
