@@ -1,6 +1,7 @@
 import facts from './facts.json' with { type: 'json' };
 
 import { formatDuration, valueForElapsed } from './fact-engine.mjs';
+import { FACT_VALUE_SLOT_CHARS, factExplainer, formatFactValue } from './fact-presentation.mjs';
 import { ensureFactCount, MAX_FACTS, MIN_FACTS, spawnFact } from './fact-lifecycle.mjs';
 import { createHorizonScene } from './horizon-scene.mjs';
 import { localInputValue, parsePastLocalTime } from './time-control.mjs';
@@ -26,17 +27,10 @@ let customStart = false;
 let activeFacts = ensureFactCount(facts, [], arrivedAt, MIN_FACTS);
 let lastSummonAt = arrivedAt;
 let restoreTimerFocus = false;
+let horizonScene;
 
 function elapsedSeconds(now = Date.now()) {
   return Math.max(0, (now - startedAt) / 1_000);
-}
-
-function formatFactValue(fact, seconds) {
-  const value = valueForElapsed(fact, seconds);
-  return new Intl.NumberFormat('en-US', {
-    maximumFractionDigits: fact.decimalPlaces,
-    notation: fact.format === 'compact' ? 'compact' : 'standard',
-  }).format(value);
 }
 
 function factPosition(active, now) {
@@ -89,13 +83,12 @@ function createFactNode(active) {
     element.title = active.fact.sourceLabel || 'Open source';
   }
 
-  const label = document.createElement('span');
-  label.className = 'fact-label';
   const value = document.createElement('span');
   value.className = 'fact-value';
-  const unit = document.createElement('span');
-  unit.className = 'fact-unit';
-  element.append(label, value, unit);
+  const explainer = document.createElement('span');
+  explainer.className = 'fact-explainer';
+  element.style.setProperty('--fact-value-slot', `${FACT_VALUE_SLOT_CHARS}ch`);
+  element.append(value, explainer);
   factsElement.append(element);
   nodes.set(active.fact.id, element);
   return element;
@@ -111,13 +104,21 @@ function renderFacts(now) {
   }
 
   const seconds = elapsedSeconds(now);
+  const bodies = [];
   activeFacts.forEach((active) => {
     const node = nodes.get(active.fact.id) || createFactNode(active);
-    const [label, value, unit] = node.children;
-    const displayValue = formatFactValue(active.fact, seconds);
-    label.textContent = active.fact.label;
-    value.textContent = displayValue;
-    unit.textContent = active.fact.unit;
+    const [value, explainer] = node.children;
+    const displayValue = formatFactValue(active.fact, valueForElapsed(active.fact, seconds));
+    if (value.textContent !== displayValue) {
+      value.textContent = displayValue;
+      if (!reducedMotion) {
+        value.animate([
+          { filter: 'blur(2px)', opacity: 0.35, transform: 'scale(0.92)' },
+          { filter: 'blur(0)', opacity: 1, transform: 'scale(1)' },
+        ], { duration: 360, easing: 'cubic-bezier(0.16, 1, 0.3, 1)' });
+      }
+    }
+    explainer.textContent = factExplainer(active.fact);
     node.setAttribute('aria-label', `${active.fact.label}: ${displayValue} ${active.fact.unit}`);
     const position = factPosition(active, now);
     node.style.left = `${position.x}%`;
@@ -125,7 +126,9 @@ function renderFacts(now) {
     node.dataset.side = position.side;
     node.style.setProperty('--fact-opacity', position.opacity);
     node.style.setProperty('--fact-angle', position.angle);
+    bodies.push({ x: position.x, y: position.y, strength: position.opacity });
   });
+  horizonScene?.setBodies(bodies);
 }
 
 function summon(now = Date.now()) {
@@ -201,7 +204,7 @@ document.addEventListener('click', (event) => {
 
 if (!reducedMotion) {
   try {
-    createHorizonScene(canvas, {
+    horizonScene = createHorizonScene(canvas, {
       onContextLost() {
         body.classList.remove('has-webgl');
         body.classList.add('no-webgl');

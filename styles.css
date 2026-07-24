@@ -119,7 +119,7 @@ button { cursor: pointer; }
 #duration {
   font-family: 'Bodoni Moda', Baskerville, Georgia, serif;
   font-optical-sizing: auto;
-  font-size: clamp(3rem, 6.2vw, 6.4rem);
+  font-size: clamp(3rem, 6.2vw, 6rem);
   font-variant-numeric: lining-nums tabular-nums;
   font-weight: 500;
   letter-spacing: -0.065em;
@@ -143,7 +143,9 @@ button { cursor: pointer; }
 #facts { inset: 0; pointer-events: none; position: absolute; z-index: 2; }
 
 .fact {
-  max-width: min(24rem, 34vw);
+  align-items: center;
+  display: flex;
+  gap: clamp(0.45rem, 0.8vw, 0.8rem);
   opacity: var(--fact-opacity, 1);
   pointer-events: auto;
   position: absolute;
@@ -154,13 +156,51 @@ button { cursor: pointer; }
 
 .fact, .fact:visited { color: var(--mineral); text-decoration: none; }
 .fact[data-side="left"] { text-align: left; transform: translate(0, -50%) rotate(var(--fact-angle, 0deg)); }
-.fact[data-side="right"] { text-align: right; transform: translate(-100%, -50%) rotate(var(--fact-angle, 0deg)); }
-.fact[data-linked="true"]:hover .fact-label, .fact[data-linked="true"]:focus-visible .fact-label { color: #fff7e8; text-decoration: underline; text-decoration-color: var(--gold); text-underline-offset: 0.36em; }
+.fact[data-side="right"] { flex-direction: row-reverse; text-align: right; transform: translate(-100%, -50%) rotate(var(--fact-angle, 0deg)); }
+.fact[data-side="right"] .fact-value { text-align: start; }
+.fact[data-linked="true"]:hover .fact-explainer, .fact[data-linked="true"]:focus-visible .fact-explainer { color: #fff7e8; text-decoration: underline; text-decoration-color: var(--gold); text-underline-offset: 0.28em; }
 .fact[data-linked="true"]:focus-visible { outline: 1px solid var(--gold); outline-offset: 0.45rem; }
 
-.fact-label { color: color-mix(in srgb, var(--mineral) 80%, transparent); display: block; font-size: clamp(0.68rem, 0.9vw, 0.88rem); font-weight: 500; letter-spacing: 0.005em; line-height: 1.35; }
-.fact-value { color: var(--gold); display: inline-block; font-family: 'Bodoni Moda', Baskerville, Georgia, serif; font-size: clamp(1.25rem, 2vw, 2.3rem); font-variant-numeric: lining-nums tabular-nums; font-weight: 500; letter-spacing: -0.045em; line-height: 1.05; margin: 0.22rem 0.35rem 0 0; text-shadow: 0 0 1.8rem color-mix(in srgb, var(--ember) 30%, transparent); }
-.fact-unit { color: color-mix(in srgb, var(--mineral) 70%, transparent); font-size: clamp(0.62rem, 0.75vw, 0.74rem); font-weight: 500; line-height: 1.25; }
+.fact-value {
+  color: var(--gold);
+  display: inline-block;
+  flex: 0 0 var(--fact-value-slot, 6ch);
+  font-family: 'Bodoni Moda', Baskerville, Georgia, serif;
+  font-size: clamp(1.25rem, 2vw, 2.3rem);
+  font-variant-numeric: lining-nums tabular-nums;
+  font-weight: 500;
+  inline-size: var(--fact-value-slot, 6ch);
+  letter-spacing: -0.03em;
+  line-height: 1;
+  min-inline-size: 0;
+  position: relative;
+  text-align: end;
+  text-shadow: 0 0 1.8rem color-mix(in srgb, var(--ember) 30%, transparent);
+  white-space: nowrap;
+}
+
+.fact-value::before {
+  border: 1px solid color-mix(in srgb, var(--gold) 34%, transparent);
+  border-bottom-color: transparent;
+  border-left-color: color-mix(in srgb, var(--mineral) 26%, transparent);
+  border-radius: 50%;
+  content: '';
+  inset: -0.38em -0.55em;
+  pointer-events: none;
+  position: absolute;
+  transform: rotate(-12deg);
+}
+
+.fact-explainer {
+  color: color-mix(in srgb, var(--mineral) 82%, transparent);
+  font-size: clamp(0.62rem, 0.78vw, 0.76rem);
+  font-weight: 500;
+  line-height: 1.2;
+  max-inline-size: min(18rem, 22vw);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 
 .field-instruction {
   bottom: clamp(1rem, 3vw, 2.4rem);
@@ -204,9 +244,9 @@ button { cursor: pointer; }
 @media (max-width: 700px) {
   :root { --ring-width: min(92vw, 31rem); }
   .wordmark { font-size: 0.55rem; }
-  .fact { max-width: 11.5rem; }
-  .fact-label { font-size: 0.64rem; }
+  .fact { gap: 0.4rem; max-width: none; }
   .fact-value { font-size: 1.15rem; }
+  .fact-explainer { font-size: 0.58rem; max-inline-size: 7.25rem; }
   .field-instruction { font-size: 0.48rem; white-space: nowrap; }
 }
 

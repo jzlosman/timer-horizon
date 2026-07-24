@@ -10,7 +10,7 @@ colors:
 typography:
   display:
     fontFamily: "Bodoni Moda, Baskerville, Georgia, serif"
-    fontSize: "clamp(3rem, 6.2vw, 6.4rem)"
+    fontSize: "clamp(3rem, 6.2vw, 6rem)"
     fontWeight: 500
     lineHeight: 0.86
     letterSpacing: "-0.065em"
@@ -76,7 +76,7 @@ Color is physical light, not scattered accent paint. The field is almost neutral
 ### Hierarchy
 - **Display:** Owns only the central elapsed duration.
 - **Title:** The small, calm brand wordmark.
-- **Body:** Moving fact labels, values, and units.
+- **Body:** A stable numerical fact body with one compact explainer.
 - **Label:** Tiny uppercase utility copy and modal annotations.
 
 **The Human-Clock Rule.** The duration always uses words such as `5 minutes, 12 seconds`, never a digit-only stopwatch.
@@ -87,7 +87,7 @@ The viewport is the composition. Its optical center sits slightly above the geom
 
 ## Elevation & Depth
 
-There are no panels or conventional shadows. Depth comes from particle parallax, a slow upper-to-horizon fall, velocity, fading, and the ring's additive bloom. The horizon itself breathes almost imperceptibly while a bright seam precesses around its rim. A pointer creates a short wake in the abstract glyphs only—never in timer text, facts, or controls. The timer and fact layer are crisp semantic HTML above the visual field. On non-WebGL or reduced-motion devices, a still multi-band dust ring keeps the central form legible.
+There are no panels or conventional shadows. Depth comes from particle parallax, a slow upper-to-horizon fall, velocity, fading, and the ring's additive bloom. The horizon itself breathes almost imperceptibly while a bright seam precesses around its rim. Each fact is a fixed-width numerical body: its digits materialize without moving the caption, while nearby glyphs bend into a brief orbital wake. A pointer creates a short wake in the abstract glyphs only—never in timer text, facts, or controls. The timer and fact layer are crisp semantic HTML above the visual field. On non-WebGL or reduced-motion devices, a still multi-band dust ring keeps the central form legible.
 
 ## Shapes
 
@@ -113,7 +113,7 @@ No rounded containers. The event horizon is the recurring form: a broken ellipti
 - **Do** keep the core absolutely black—facts and glyphs vanish at the rim, leaving the timer alone.
 - **Do** let the horizon breathe and send a bright seam around its rim; motion should feel orbital, not like a loading spinner.
 - **Do** let a pointer wake disturb only the abstract field, so interaction adds material response without compromising reading.
-- **Do** keep facts readable, rate-driven, and visibly separate from the abstract glyph field.
+- **Do** keep facts readable as a stable numerical body plus one single-line explainer, visibly separate from the abstract glyph field.
 - **Do** preserve the central duration and accessible content when effects are unavailable.
 
 ### Don't:

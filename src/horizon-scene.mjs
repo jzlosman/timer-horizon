@@ -3,6 +3,7 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
 import { glyphCountForDensity } from './scene-math.mjs';
 
 const glyphCharacters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz+-=×÷<>/\\|[]{}()!?@#$%&*~^:;';
+const BODY_LIMIT = 8;
 
 function glyphAtlas() {
   const columns = 16;
@@ -46,6 +47,8 @@ function glyphMaterial(atlas) {
       uPointer: { value: new THREE.Vector2(2, 2) },
       uPointerVelocity: { value: new THREE.Vector2() },
       uPointerEnergy: { value: 0 },
+      uBodies: { value: Array.from({ length: BODY_LIMIT }, () => new THREE.Vector2(2, 2)) },
+      uBodyStrength: { value: new Float32Array(BODY_LIMIT) },
     },
     vertexShader: `
       attribute float aSeed;
@@ -61,6 +64,8 @@ function glyphMaterial(atlas) {
       uniform vec2 uPointer;
       uniform vec2 uPointerVelocity;
       uniform float uPointerEnergy;
+      uniform vec2 uBodies[8];
+      uniform float uBodyStrength[8];
 
       float hash(float n) { return fract(sin(n) * 43758.5453123); }
 
@@ -94,6 +99,16 @@ function glyphMaterial(atlas) {
         vec2 wakeDirection = normalize(wakeDelta + vec2(0.0001));
         vec2 wakeTangent = vec2(-wakeDirection.y, wakeDirection.x);
         point += wakeDirection * wake * 0.075 + wakeTangent * wake * 0.025 + uPointerVelocity * wake * 0.28;
+        float bodyOrbit = 0.0;
+        for (int i = 0; i < 8; i++) {
+          vec2 bodyDelta = point - uBodies[i];
+          float bodyDistance = length(bodyDelta) + 0.0001;
+          float orbit = uBodyStrength[i] * exp(-bodyDistance * bodyDistance * 52.0);
+          bodyOrbit = max(bodyOrbit, orbit);
+          vec2 bodyDirection = bodyDelta / bodyDistance;
+          vec2 bodyTangent = vec2(-bodyDirection.y, bodyDirection.x);
+          point += bodyTangent * orbit * 0.07 + bodyDirection * orbit * 0.008;
+        }
         vec2 voidPoint = (point - vec2(0.0, uHorizonOffset)) * 0.5;
         voidPoint.x *= uAspect * 0.58;
         float voidMask = smoothstep(0.225, 0.25, length(voidPoint));
@@ -101,9 +116,9 @@ function glyphMaterial(atlas) {
         float fadeIn = smoothstep(0.0, 0.08, cycle);
         float fadeOut = 1.0 - smoothstep(0.76, 1.0, cycle);
         vGlyph = aGlyph;
-        vAlpha = (0.18 + aDepth * 0.46 + heat * 0.16) * fadeIn * fadeOut * voidMask * mix(1.0, 0.78, upperStratum) * mix(1.0, 0.9, volumeStratum);
-        vHeat = heat;
-        gl_PointSize = (3.0 + aDepth * 7.2 + heat * 2.0 + upperStratum * 1.5) * mix(1.0, 0.94, volumeStratum) * uPixelRatio;
+        vAlpha = (0.18 + aDepth * 0.46 + heat * 0.16 + bodyOrbit * 0.14) * fadeIn * fadeOut * voidMask * mix(1.0, 0.78, upperStratum) * mix(1.0, 0.9, volumeStratum);
+        vHeat = max(heat, bodyOrbit * 0.74);
+        gl_PointSize = (3.0 + aDepth * 7.2 + heat * 2.0 + upperStratum * 1.5 + bodyOrbit * 2.2) * mix(1.0, 0.94, volumeStratum) * uPixelRatio;
         gl_Position = vec4(point, 0.0, 1.0);
       }
     `,
@@ -183,6 +198,8 @@ export function createHorizonScene(canvas, { reducedMotion = false, onContextLos
 
   const points = new THREE.Points(geometry, glyphMaterial(atlas));
   const ring = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), ringMaterial());
+  const bodyTargets = Array.from({ length: BODY_LIMIT }, () => new THREE.Vector2(2, 2));
+  const bodyStrengthTargets = new Float32Array(BODY_LIMIT);
   scene.add(points, ring);
 
   let frame;
@@ -212,6 +229,10 @@ export function createHorizonScene(canvas, { reducedMotion = false, onContextLos
     points.material.uniforms.uPointer.value.copy(pointer);
     points.material.uniforms.uPointerVelocity.value.copy(pointerVelocity);
     points.material.uniforms.uPointerEnergy.value = pointerEnergy;
+    points.material.uniforms.uBodies.value.forEach((body, index) => {
+      body.lerp(bodyTargets[index], 0.08);
+      points.material.uniforms.uBodyStrength.value[index] += (bodyStrengthTargets[index] - points.material.uniforms.uBodyStrength.value[index]) * 0.08;
+    });
     ring.material.uniforms.uTime.value = elapsed;
     renderer.render(scene, camera);
     frame = requestAnimationFrame(animate);
@@ -230,6 +251,13 @@ export function createHorizonScene(canvas, { reducedMotion = false, onContextLos
   animate();
 
   return {
+    setBodies(bodies) {
+      for (let index = 0; index < BODY_LIMIT; index += 1) {
+        const body = bodies[index];
+        bodyTargets[index].set(body ? body.x * 0.02 - 1 : 2, body ? 1 - body.y * 0.02 : 2);
+        bodyStrengthTargets[index] = body?.strength ?? 0;
+      }
+    },
     destroy() {
       active = false;
       cancelAnimationFrame(frame);
