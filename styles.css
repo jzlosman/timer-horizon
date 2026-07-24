@@ -146,7 +146,7 @@ button { cursor: pointer; }
   display: grid;
   gap: 0.3rem;
   justify-items: center;
-  max-inline-size: min(16rem, 22vw);
+  max-inline-size: min(20rem, 75vw);
   opacity: var(--fact-opacity, 1);
   pointer-events: auto;
   position: absolute;
@@ -186,7 +186,7 @@ button { cursor: pointer; }
 
 .fact-unit {
   color: color-mix(in srgb, var(--mineral-dim) 86%, transparent);
-  font-size: clamp(0.56rem, 0.7vw, 0.7rem);
+  font-size: clamp(0.54rem, 0.65vw, 0.66rem);
   font-weight: 600;
   line-height: 1;
   text-align: start;

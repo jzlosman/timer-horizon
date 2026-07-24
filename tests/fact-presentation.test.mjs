@@ -5,7 +5,7 @@ import { factExplainer, factUnit, formatFactValue, valueSlotWidth, valueUpdateIn
 
 test('renders each fact as one stable numerical body with a compact explainer', () => {
   assert.equal(factExplainer({ label: 'Wikipedia has received', unit: 'edits' }), 'Wikipedia has received');
-  assert.equal(factUnit({ unit: 'km through the Milky Way' }), 'km');
+  assert.equal(factUnit({ unit: 'km through the Milky Way' }), 'km through the Milky Way');
   assert.equal(valueSlotWidth('999'), valueSlotWidth('1,000'));
 });
 

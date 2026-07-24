@@ -9,7 +9,7 @@ export function factExplainer({ label }) {
 }
 
 export function factUnit({ unit }) {
-  return unit.split(' ')[0];
+  return unit;
 }
 
 export function valueUpdateInterval(seed) {
