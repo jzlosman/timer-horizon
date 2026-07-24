@@ -1,7 +1,7 @@
 import facts from './facts.json' with { type: 'json' };
 
 import { formatDuration, valueForElapsed } from './fact-engine.mjs';
-import { FACT_VALUE_SLOT_CHARS, factExplainer, formatFactValue, valueUpdateInterval } from './fact-presentation.mjs';
+import { FACT_VALUE_SLOT_CHARS, factExplainer, factUnit, formatFactValue, valueUpdateInterval } from './fact-presentation.mjs';
 import { ensureFactCount, MAX_FACTS, MIN_FACTS, spawnFact } from './fact-lifecycle.mjs';
 import { createHorizonScene } from './horizon-scene.mjs';
 import { localInputValue, parsePastLocalTime } from './time-control.mjs';
@@ -83,12 +83,17 @@ function createFactNode(active) {
     element.title = active.fact.sourceLabel || 'Open source';
   }
 
+  const factBody = document.createElement('span');
+  factBody.className = 'fact-body';
   const value = document.createElement('span');
   value.className = 'fact-value';
+  const unit = document.createElement('span');
+  unit.className = 'fact-unit';
   const explainer = document.createElement('span');
   explainer.className = 'fact-explainer';
   element.style.setProperty('--fact-value-slot', `${FACT_VALUE_SLOT_CHARS}ch`);
-  element.append(value, explainer);
+  factBody.append(value, unit);
+  element.append(factBody, explainer);
   factsElement.append(element);
   nodes.set(active.fact.id, element);
   return element;
@@ -107,7 +112,8 @@ function renderFacts(now) {
   const bodies = [];
   activeFacts.forEach((active) => {
     const node = nodes.get(active.fact.id) || createFactNode(active);
-    const [value, explainer] = node.children;
+    const [factBody, explainer] = node.children;
+    const [value, unit] = factBody.children;
     const lastUpdate = Number(node.dataset.valueUpdatedAt || 0);
     if (now - lastUpdate >= valueUpdateInterval(active.seed)) {
       const previousValue = value.textContent;
@@ -121,6 +127,7 @@ function renderFacts(now) {
         ], { duration: 420, easing: 'cubic-bezier(0.16, 1, 0.3, 1)' });
       }
     }
+    unit.textContent = factUnit(active.fact);
     explainer.textContent = factExplainer(active.fact);
     node.setAttribute('aria-label', `${active.fact.label}: ${value.textContent} ${active.fact.unit}`);
     const position = factPosition(active, now);

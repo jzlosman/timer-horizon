@@ -4,8 +4,12 @@ export function valueSlotWidth() {
   return FACT_VALUE_SLOT_CHARS;
 }
 
-export function factExplainer({ label, unit }) {
-  return `${label} · ${unit}`;
+export function factExplainer({ label }) {
+  return label;
+}
+
+export function factUnit({ unit }) {
+  return unit.split(' ')[0];
 }
 
 export function valueUpdateInterval(seed) {

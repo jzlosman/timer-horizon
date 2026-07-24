@@ -145,23 +145,27 @@ button { cursor: pointer; }
 .fact {
   display: grid;
   gap: 0.3rem;
+  justify-items: center;
   max-inline-size: min(16rem, 22vw);
   opacity: var(--fact-opacity, 1);
   pointer-events: auto;
   position: absolute;
+  text-align: center;
   transform: translate(-50%, -50%) rotate(var(--fact-angle, 0deg));
   transition: left 950ms linear, top 950ms linear, opacity 700ms ease;
   z-index: 2;
 }
 
 .fact, .fact:visited { color: var(--mineral); text-decoration: none; }
-.fact[data-side="left"] { justify-items: start; text-align: left; transform: translate(0, -50%) rotate(var(--fact-angle, 0deg)); }
-.fact[data-side="right"] { justify-items: end; text-align: right; transform: translate(-100%, -50%) rotate(var(--fact-angle, 0deg)); }
-.fact[data-side="center"] { justify-items: center; text-align: center; }
-.fact[data-side="right"] .fact-value { text-align: end; }
-.fact[data-side="center"] .fact-value { text-align: center; }
 .fact[data-linked="true"]:hover .fact-explainer, .fact[data-linked="true"]:focus-visible .fact-explainer { color: #fff7e8; text-decoration: underline; text-decoration-color: var(--gold); text-underline-offset: 0.28em; }
 .fact[data-linked="true"]:focus-visible { outline: 1px solid var(--gold); outline-offset: 0.45rem; }
+
+.fact-body {
+  align-items: baseline;
+  display: inline-flex;
+  gap: 0.25rem;
+  position: relative;
+}
 
 .fact-value {
   color: var(--gold);
@@ -175,19 +179,27 @@ button { cursor: pointer; }
   letter-spacing: -0.03em;
   line-height: 1;
   min-inline-size: 0;
-  position: relative;
-  text-align: start;
+  text-align: end;
   text-shadow: 0 0 1.8rem color-mix(in srgb, var(--ember) 30%, transparent);
   white-space: nowrap;
 }
 
-.fact-value::before {
-  border: 1px solid color-mix(in srgb, var(--gold) 34%, transparent);
+.fact-unit {
+  color: color-mix(in srgb, var(--mineral-dim) 86%, transparent);
+  font-size: clamp(0.56rem, 0.7vw, 0.7rem);
+  font-weight: 600;
+  line-height: 1;
+  text-align: start;
+  white-space: nowrap;
+}
+
+.fact-body::before {
+  border: 1px solid color-mix(in srgb, var(--gold) 38%, transparent);
   border-bottom-color: transparent;
-  border-left-color: color-mix(in srgb, var(--mineral) 26%, transparent);
+  border-left-color: color-mix(in srgb, var(--mineral) 28%, transparent);
   border-radius: 50%;
   content: '';
-  inset: -0.38em -0.55em;
+  inset: -0.42em -0.62em;
   pointer-events: none;
   position: absolute;
   transform: rotate(-12deg);

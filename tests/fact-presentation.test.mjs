@@ -1,10 +1,11 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 
-import { factExplainer, formatFactValue, valueSlotWidth, valueUpdateInterval } from '../src/fact-presentation.mjs';
+import { factExplainer, factUnit, formatFactValue, valueSlotWidth, valueUpdateInterval } from '../src/fact-presentation.mjs';
 
 test('renders each fact as one stable numerical body with a compact explainer', () => {
-  assert.equal(factExplainer({ label: 'Wikipedia has received', unit: 'edits' }), 'Wikipedia has received · edits');
+  assert.equal(factExplainer({ label: 'Wikipedia has received', unit: 'edits' }), 'Wikipedia has received');
+  assert.equal(factUnit({ unit: 'km through the Milky Way' }), 'km');
   assert.equal(valueSlotWidth('999'), valueSlotWidth('1,000'));
 });
 
