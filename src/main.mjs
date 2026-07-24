@@ -95,6 +95,7 @@ function createFactNode(active) {
   const conjunction = document.createElement('span');
   conjunction.className = 'fact-conjunction';
   conjunction.setAttribute('aria-hidden', 'true');
+  conjunction.addEventListener('animationend', () => element.classList.remove('is-arriving'));
   const explainer = document.createElement('span');
   explainer.className = 'fact-explainer';
   element.style.setProperty('--fact-value-slot', `${FACT_VALUE_SLOT_CHARS}ch`);
@@ -121,7 +122,7 @@ function renderFacts(now) {
     const position = factPosition(active, now);
     const visualArrivalAt = active.bornAt + (active.expiresAt - active.bornAt) * (position.enterAt + 0.12);
     const arrivalPulse = reducedMotion ? 0 : factArrivalPulse(visualArrivalAt, now);
-    node.classList.toggle('is-arriving', arrivalPulse > 0);
+    if (arrivalPulse > 0) node.classList.add('is-arriving');
     const [factBody, explainer] = node.children;
     const [value, unit] = factBody.children;
     const lastUpdate = Number(node.dataset.valueUpdatedAt || 0);

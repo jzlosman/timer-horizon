@@ -15,8 +15,11 @@ function block(source, expression) {
 
 test('renders and animates an arriving conjunction without affecting reduced motion', () => {
   const createFactNode = block(main, /function createFactNode\(active\) \{([\s\S]*?)\n\}\n\nfunction renderFacts/);
-  assert.match(createFactNode, /const conjunction = document\.createElement\('span'\);\s+conjunction\.className = 'fact-conjunction';\s+conjunction\.setAttribute\('aria-hidden', 'true'\);/);
+  const renderFacts = block(main, /function renderFacts\(now\) \{([\s\S]*?)\n\}\n\nfunction summon/);
+  assert.match(createFactNode, /const conjunction = document\.createElement\('span'\);\s+conjunction\.className = 'fact-conjunction';\s+conjunction\.setAttribute\('aria-hidden', 'true'\);\s+conjunction\.addEventListener\('animationend', \(\) => element\.classList\.remove\('is-arriving'\)\);/);
   assert.match(createFactNode, /factBody\.append\(value, unit, conjunction\);/);
+  assert.match(renderFacts, /if \(arrivalPulse > 0\) node\.classList\.add\('is-arriving'\);/);
+  assert.doesNotMatch(renderFacts, /classList\.toggle\('is-arriving'/);
 
   const animations = [...styles.matchAll(/([^{}]+)\{([^{}]*animation:\s*fact-conjunction\s+([\d.]+)s[^{}]*)\}/g)];
   assert.deepEqual(animations.map(([, selector]) => selector.trim()), ['.fact.is-arriving .fact-conjunction']);
