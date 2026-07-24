@@ -52,15 +52,21 @@ test('progressively morphs the timer through the start dialog', () => {
 });
 
 test('serializes singularity transactions and cleans up owned names', () => {
-  const helper = block(main, /function startSingularityTransition\(prepare, start, update, fallback\) \{([\s\S]*?)\n\}\n\nfunction openStartDialog/);
+  const helper = block(main, /function startSingularityTransition\(prepare, start, update, fallback, pendingAction\) \{([\s\S]*?)\n\}\n\nfunction openStartDialog/);
   const cleanup = block(helper, /const cleanup = \(\) => \{([\s\S]*?)\n  \};/);
 
   assert.match(main, /let singularityTransition;/);
-  assert.match(helper, /if \(singularityTransition\) return false;/);
-  assert.ok(helper.indexOf('if (singularityTransition) return false;') < helper.indexOf('document.startViewTransition'));
+  assert.match(helper, /if \(singularityTransition\) \{\s+pendingSingularityAction = pendingAction;\s+return false;\s+\}/);
+  assert.ok(helper.indexOf('if (singularityTransition) {') < helper.indexOf('document.startViewTransition'));
   assert.match(helper, /const transaction = \{\};\s+singularityTransition = transaction;/);
-  assert.match(cleanup, /if \(singularityTransition !== transaction\) return;\s+timer\.style\.viewTransitionName = '';\s+dialog\.style\.viewTransitionName = '';\s+singularityTransition = null;/);
+  assert.match(cleanup, /if \(singularityTransition !== transaction\) return;\s+timer\.style\.viewTransitionName = '';\s+dialog\.style\.viewTransitionName = '';\s+singularityTransition = null;\s+const action = pendingSingularityAction;\s+pendingSingularityAction = null;\s+action\?\.\(\);/);
   assert.match(helper, /transition\.ready\.catch\(cleanup\);/);
   assert.match(helper, /transition\.finished\.then\(cleanup, cleanup\);/);
   assert.match(helper, /catch \{\s+cleanup\(\);\s+fallback\(\);/);
+});
+
+test('replays the last terminal dialog action after a busy transition releases its lock', () => {
+  assert.match(main, /let pendingSingularityAction;/);
+  assert.match(main, /showStartDialog,\s+openStartDialog,/);
+  assert.match(main, /closeDialog,\s+closeStartDialog,/);
 });

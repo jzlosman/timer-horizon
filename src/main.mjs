@@ -31,6 +31,7 @@ let lastSummonAt = arrivedAt;
 let restoreTimerFocus = false;
 let horizonScene;
 let singularityTransition;
+let pendingSingularityAction;
 
 function elapsedSeconds(now = Date.now()) {
   return Math.max(0, (now - startedAt) / 1_000);
@@ -198,8 +199,11 @@ function closeDialog() {
   if (dialog.open) dialog.close();
 }
 
-function startSingularityTransition(prepare, start, update, fallback) {
-  if (singularityTransition) return false;
+function startSingularityTransition(prepare, start, update, fallback, pendingAction) {
+  if (singularityTransition) {
+    pendingSingularityAction = pendingAction;
+    return false;
+  }
   prepare();
 
   if (typeof document.startViewTransition !== 'function') {
@@ -214,6 +218,9 @@ function startSingularityTransition(prepare, start, update, fallback) {
     timer.style.viewTransitionName = '';
     dialog.style.viewTransitionName = '';
     singularityTransition = null;
+    const action = pendingSingularityAction;
+    pendingSingularityAction = null;
+    action?.();
   };
 
   try {
@@ -245,6 +252,7 @@ function openStartDialog() {
       showStartDialog();
     },
     showStartDialog,
+    openStartDialog,
   );
 }
 
@@ -259,6 +267,7 @@ function closeStartDialog() {
       closeDialog();
     },
     closeDialog,
+    closeStartDialog,
   );
 }
 
