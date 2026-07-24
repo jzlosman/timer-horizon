@@ -30,7 +30,7 @@ button { cursor: pointer; }
 }
 
 #field { pointer-events: none; z-index: 0; }
-#experience { isolation: isolate; overflow: hidden; z-index: 1; }
+#experience { cursor: crosshair; isolation: isolate; overflow: hidden; z-index: 1; }
 
 .wordmark {
   color: color-mix(in srgb, var(--mineral) 60%, transparent);

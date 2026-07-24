@@ -46,7 +46,7 @@ The experience is dense but never dashboard-like. Motion earns the spectacle. Fa
 **Key Characteristics:**
 - A plain-language duration inside a living accretion ring.
 - A soot-dark field, mineral text, and hot stellar light.
-- Shader-driven currents plus a resilient HTML content layer.
+- Shader-driven currents, a cursor wake, and a resilient HTML content layer.
 - No cards, graph furniture, terminal tropes, or chrome-heavy controls.
 
 ## Colors
@@ -87,7 +87,7 @@ The viewport is the composition. Its optical center sits slightly above the geom
 
 ## Elevation & Depth
 
-There are no panels or conventional shadows. Depth comes from particle parallax, a slow upper-to-horizon fall, velocity, fading, and the ring's additive bloom. The timer and fact layer are crisp semantic HTML above the visual field. On non-WebGL or reduced-motion devices, a still multi-band dust ring keeps the central form legible.
+There are no panels or conventional shadows. Depth comes from particle parallax, a slow upper-to-horizon fall, velocity, fading, and the ring's additive bloom. A pointer creates a short wake in the abstract glyphs only—never in timer text, facts, or controls. The timer and fact layer are crisp semantic HTML above the visual field. On non-WebGL or reduced-motion devices, a still multi-band dust ring keeps the central form legible.
 
 ## Shapes
 
@@ -109,6 +109,7 @@ No rounded containers. The event horizon is the recurring form: a broken ellipti
 
 ### Do:
 - **Do** make streams first occupy the upper field, then bend, shear, accelerate, and disappear toward the event horizon.
+- **Do** let a pointer wake disturb only the abstract field, so interaction adds material response without compromising reading.
 - **Do** keep facts readable, rate-driven, and visibly separate from the abstract glyph field.
 - **Do** preserve the central duration and accessible content when effects are unavailable.
 

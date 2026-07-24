@@ -11,7 +11,8 @@ import {
 test('formats a human duration without a stopwatch treatment', () => {
   assert.equal(formatDuration(312), '5 minutes, 12 seconds');
   assert.equal(formatDuration(1), '1 second');
-  assert.equal(formatDuration(3_661), '1 hour, 1 minute, 1 second');
+  assert.equal(formatDuration(3_661), '1 hour, 1 minute');
+  assert.equal(formatDuration(86_401), '1 day, 0 hours');
 });
 
 test('calculates a fact value from its stated period', () => {

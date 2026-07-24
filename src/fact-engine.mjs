@@ -10,17 +10,17 @@ const plural = (count, label) => `${count} ${label}${count === 1 ? '' : 's'}`;
 
 export function formatDuration(totalSeconds) {
   let remaining = Math.max(0, Math.floor(totalSeconds));
+  const days = Math.floor(remaining / 86_400);
+  remaining -= days * 86_400;
   const hours = Math.floor(remaining / 3_600);
   remaining -= hours * 3_600;
   const minutes = Math.floor(remaining / 60);
   const seconds = remaining - minutes * 60;
-  const parts = [];
 
-  if (hours) parts.push(plural(hours, 'hour'));
-  if (minutes) parts.push(plural(minutes, 'minute'));
-  if (seconds || parts.length === 0) parts.push(plural(seconds, 'second'));
-
-  return parts.join(', ');
+  if (days) return `${plural(days, 'day')}, ${plural(hours, 'hour')}`;
+  if (hours) return `${plural(hours, 'hour')}, ${plural(minutes, 'minute')}`;
+  if (minutes) return `${plural(minutes, 'minute')}, ${plural(seconds, 'second')}`;
+  return plural(seconds, 'second');
 }
 
 export function valueForElapsed({ rate, period }, elapsedSeconds) {

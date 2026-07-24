@@ -42,6 +42,9 @@ function glyphMaterial(atlas) {
       uColumns: { value: atlas.columns },
       uRows: { value: atlas.rows },
       uHorizonOffset: { value: 0.11 },
+      uPointer: { value: new THREE.Vector2(2, 2) },
+      uPointerVelocity: { value: new THREE.Vector2() },
+      uPointerEnergy: { value: 0 },
     },
     vertexShader: `
       attribute float aSeed;
@@ -53,6 +56,9 @@ function glyphMaterial(atlas) {
       uniform float uTime;
       uniform float uPixelRatio;
       uniform float uHorizonOffset;
+      uniform vec2 uPointer;
+      uniform vec2 uPointerVelocity;
+      uniform float uPointerEnergy;
 
       float hash(float n) { return fract(sin(n) * 43758.5453123); }
 
@@ -72,6 +78,11 @@ function glyphMaterial(atlas) {
         );
         point = mix(point, upperPoint, upperStratum);
         point.y += uHorizonOffset + sin(uTime * 0.08 + aSeed * 31.0) * 0.026;
+        vec2 wakeDelta = point - uPointer;
+        float wake = exp(-dot(wakeDelta, wakeDelta) * 11.0) * uPointerEnergy;
+        vec2 wakeDirection = normalize(wakeDelta + vec2(0.0001));
+        vec2 wakeTangent = vec2(-wakeDirection.y, wakeDirection.x);
+        point += wakeDirection * wake * 0.075 + wakeTangent * wake * 0.025 + uPointerVelocity * wake * 0.28;
         float heat = 1.0 - smoothstep(0.12, 0.54, radius);
         float fadeIn = smoothstep(0.0, 0.08, cycle);
         float fadeOut = 1.0 - smoothstep(0.76, 1.0, cycle);
@@ -144,7 +155,7 @@ export function createHorizonScene(canvas, { reducedMotion = false, onContextLos
   const scene = new THREE.Scene();
   const camera = new THREE.Camera();
   const atlas = glyphAtlas();
-  const count = glyphCountForDensity(window.innerWidth < 700 ? 1800 : 7200, false);
+  const count = glyphCountForDensity(window.innerWidth < 700 ? 4000 : 14000, false);
   const geometry = new THREE.BufferGeometry();
   geometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array(count * 3), 3));
   geometry.setAttribute('aSeed', new THREE.BufferAttribute(Float32Array.from({ length: count }, () => Math.random()), 1));
@@ -157,7 +168,16 @@ export function createHorizonScene(canvas, { reducedMotion = false, onContextLos
 
   let frame;
   let active = true;
+  let pointerEnergy = 0;
+  const pointer = new THREE.Vector2(2, 2);
+  const pointerVelocity = new THREE.Vector2();
   const clock = new THREE.Clock();
+  const handlePointerMove = ({ clientX, clientY }) => {
+    const next = new THREE.Vector2((clientX / window.innerWidth) * 2 - 1, 1 - (clientY / window.innerHeight) * 2);
+    pointerVelocity.copy(next).sub(pointer).clampLength(0, 0.36);
+    pointer.copy(next);
+    pointerEnergy = 1;
+  };
   const resize = () => {
     renderer.setSize(window.innerWidth, window.innerHeight, false);
     ring.material.uniforms.uAspect.value = window.innerWidth / window.innerHeight;
@@ -165,7 +185,12 @@ export function createHorizonScene(canvas, { reducedMotion = false, onContextLos
   const animate = () => {
     if (!active) return;
     const elapsed = clock.getElapsedTime();
+    pointerEnergy *= 0.92;
+    pointerVelocity.multiplyScalar(0.88);
     points.material.uniforms.uTime.value = elapsed;
+    points.material.uniforms.uPointer.value.copy(pointer);
+    points.material.uniforms.uPointerVelocity.value.copy(pointerVelocity);
+    points.material.uniforms.uPointerEnergy.value = pointerEnergy;
     ring.material.uniforms.uTime.value = elapsed;
     renderer.render(scene, camera);
     frame = requestAnimationFrame(animate);
@@ -179,6 +204,7 @@ export function createHorizonScene(canvas, { reducedMotion = false, onContextLos
 
   canvas.addEventListener('webglcontextlost', handleContextLost, { once: true });
   window.addEventListener('resize', resize);
+  window.addEventListener('pointermove', handlePointerMove, { passive: true });
   resize();
   animate();
 
@@ -187,6 +213,7 @@ export function createHorizonScene(canvas, { reducedMotion = false, onContextLos
       active = false;
       cancelAnimationFrame(frame);
       window.removeEventListener('resize', resize);
+      window.removeEventListener('pointermove', handlePointerMove);
       canvas.removeEventListener('webglcontextlost', handleContextLost);
       geometry.dispose();
       points.material.dispose();

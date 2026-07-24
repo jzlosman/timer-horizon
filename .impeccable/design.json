@@ -18,7 +18,8 @@
     ],
     "motion": [
       { "name": "fact-drift", "value": "950ms linear", "purpose": "Slow readable movement of active facts." },
-      { "name": "ring-opacity", "value": "800ms ease", "purpose": "WebGL-to-fallback ring transition." }
+      { "name": "ring-opacity", "value": "800ms ease", "purpose": "WebGL-to-fallback ring transition." },
+      { "name": "cursor-wake", "value": "shader-decayed pointer vector", "purpose": "A visual-only disturbance in the abstract glyph flow." }
     ],
     "breakpoints": [
       { "name": "mobile", "value": "700px" }
@@ -45,7 +46,7 @@
   "narrative": {
     "northStar": "The Planetary Totalizer",
     "overview": "Timer Horizon is an after-hours scientific instrument: a full-screen typographic current collapsing toward a luminous central event horizon. The central duration is the only calm, human-scale object. Everything else—abstract glyphs, living figures, and light—moves because the world is larger than the visitor's clock.",
-    "keyCharacteristics": ["A plain-language duration inside a living accretion ring.", "A soot-dark field, mineral text, and hot stellar light.", "Shader-driven currents plus a resilient HTML content layer.", "No cards, graph furniture, terminal tropes, or chrome-heavy controls."],
+    "keyCharacteristics": ["A plain-language duration inside a living accretion ring.", "A soot-dark field, mineral text, and hot stellar light.", "Shader-driven currents, a cursor wake, and a resilient HTML content layer.", "No cards, graph furniture, terminal tropes, or chrome-heavy controls."],
     "rules": [
       { "name": "The One-Star Rule", "body": "The event horizon is the only major saturated form. Facts can borrow its pale heat; nothing else competes with it.", "section": "colors" },
       { "name": "The Human-Clock Rule", "body": "The duration always uses words such as 5 minutes, 12 seconds, never a digit-only stopwatch.", "section": "typography" }

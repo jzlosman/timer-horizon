@@ -14,7 +14,7 @@ Full-viewport landing experience. Mode: **Experience**.
 A curious visitor opens the page and immediately feels their elapsed time become physically connected to enormous, continuously happening processes.
 
 ## Task and interaction
-Default the timer to the visit. The central human-language duration opens a custom start-time modal. Empty field clicks invite a new fact. Active facts eventually link to citations.
+Default the timer to the visit. The central human-language duration opens a custom start-time modal. Pointer motion creates a visual-only glyph wake; empty field clicks invite a new fact. Active facts eventually link to citations.
 
 ## Content and constraints
 Show four to eight live, rate-derived facts at once. Facts must be readable HTML links; the background glyph field is abstract. Prefer a reduced-motion fallback. V1's fact catalogue reserves but does not verify sources.
