@@ -9,6 +9,7 @@ import { localInputValue, parsePastLocalTime } from './time-control.mjs';
 
 const body = document.body;
 const canvas = document.querySelector('#field');
+const experience = document.querySelector('#experience');
 const factsElement = document.querySelector('#facts');
 const timer = document.querySelector('#timer');
 const duration = document.querySelector('#duration');
@@ -187,18 +188,69 @@ function tick() {
   renderFacts(now);
 }
 
+function showStartDialog() {
+  if (!dialog.open) dialog.showModal();
+  startInput.focus();
+}
+
+function closeDialog() {
+  if (dialog.open) dialog.close();
+}
+
 function openStartDialog() {
   restoreTimerFocus = true;
   startError.textContent = '';
   startInput.max = localInputValue(Date.now());
   startInput.value = localInputValue(startedAt);
   horizonScene?.setDilation(true);
-  dialog.showModal();
-  startInput.focus();
+  experience.classList.add('is-dilating');
+
+  if (typeof document.startViewTransition !== 'function') {
+    showStartDialog();
+    return;
+  }
+
+  timer.style.viewTransitionName = 'timer-singularity';
+  try {
+    const transition = document.startViewTransition(() => {
+      timer.style.viewTransitionName = '';
+      dialog.style.viewTransitionName = 'timer-singularity';
+      showStartDialog();
+    });
+    transition.finished.then(
+      () => { dialog.style.viewTransitionName = ''; },
+      () => { dialog.style.viewTransitionName = ''; },
+    );
+  } catch {
+    timer.style.viewTransitionName = '';
+    dialog.style.viewTransitionName = '';
+    showStartDialog();
+  }
 }
 
 function closeStartDialog() {
-  dialog.close();
+  if (!dialog.open) return;
+  if (typeof document.startViewTransition !== 'function') {
+    closeDialog();
+    return;
+  }
+
+  dialog.style.viewTransitionName = 'timer-singularity';
+  try {
+    const transition = document.startViewTransition(() => {
+      dialog.style.viewTransitionName = '';
+      timer.style.viewTransitionName = 'timer-singularity';
+      closeDialog();
+    });
+    transition.finished.then(
+      () => { timer.style.viewTransitionName = ''; },
+      () => { timer.style.viewTransitionName = ''; },
+    );
+  } catch {
+    dialog.style.viewTransitionName = '';
+    timer.style.viewTransitionName = '';
+    closeDialog();
+  }
 }
 
 timer.addEventListener('click', openStartDialog);
@@ -206,11 +258,18 @@ cancelStart.addEventListener('click', closeStartDialog);
 
 dialog.addEventListener('close', () => {
   horizonScene?.setDilation(false);
+  experience.classList.remove('is-dilating');
   if (restoreTimerFocus) timer.focus();
   restoreTimerFocus = false;
 });
 
-dialog.addEventListener('cancel', () => { startError.textContent = ''; });
+dialog.addEventListener('cancel', (event) => {
+  startError.textContent = '';
+  if (typeof document.startViewTransition === 'function') {
+    event.preventDefault();
+    closeStartDialog();
+  }
+});
 
 form.addEventListener('submit', (event) => {
   event.preventDefault();
