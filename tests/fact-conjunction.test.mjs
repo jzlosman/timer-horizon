@@ -28,5 +28,5 @@ test('renders and animates an arriving conjunction without affecting reduced mot
   assert.match(keyframes, /100%\s*\{[^}]*opacity:\s*0;/);
 
   const reducedMotion = block(styles, /@media \(prefers-reduced-motion: reduce\)\s*\{([\s\S]*?)\n\}/);
-  assert.match(reducedMotion, /animation:\s*none\s*!important/);
+  assert.match(reducedMotion, /\*,\s*\*::before,\s*\*::after\s*\{[^}]*animation:\s*none\s*!important/);
 });
