@@ -8,6 +8,10 @@ export function glyphCountForDensity(count, reducedMotion) {
   return reducedMotion ? Math.max(1, Math.floor(count / 5)) : count;
 }
 
+export function sceneTempo(isDilated) {
+  return isDilated ? 0.16 : 1;
+}
+
 export function factArrivalPulse(arrivalAt, now, duration = 1_200) {
   if (now < arrivalAt) return 0;
   return Math.max(0, 1 - (now - arrivalAt) / duration);

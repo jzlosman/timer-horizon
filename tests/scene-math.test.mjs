@@ -6,6 +6,7 @@ import {
   factArrivalPulse,
   glyphCountForDensity,
   gravitationalPull,
+  sceneTempo,
 } from '../src/scene-math.mjs';
 
 test('the event horizon pulls harder as glyphs approach', () => {
@@ -20,6 +21,11 @@ test('a glyph that enters the horizon respawns at the outer field', () => {
 test('reduced motion lowers glyph density without removing the field', () => {
   assert.equal(glyphCountForDensity(1200, false), 1200);
   assert.equal(glyphCountForDensity(1200, true), 240);
+});
+
+test('a dilated scene moves at singularity tempo', () => {
+  assert.equal(sceneTempo(false), 1);
+  assert.equal(sceneTempo(true), 0.16);
 });
 
 test('a fact emits one bounded orbital arrival pulse when it reaches its readable lane', () => {
