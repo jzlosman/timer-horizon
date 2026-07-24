@@ -22,20 +22,12 @@ test('progressively morphs the timer through the start dialog', () => {
   assert.match(open, /horizonScene\?\.setDilation\(true\);\s+experience\.classList\.add\('is-dilating'\);/);
   assert.match(closeHandler, /horizonScene\?\.setDilation\(false\);\s+experience\.classList\.remove\('is-dilating'\);/);
 
-  assert.match(open, /if \(typeof document\.startViewTransition !== 'function'\)/);
-  assert.match(close, /if \(typeof document\.startViewTransition !== 'function'\)/);
-  assert.match(open, /catch \{[\s\S]*showStartDialog\(\);/);
-  assert.match(close, /catch \{[\s\S]*closeDialog\(\);/);
-
-  const openTransition = block(open, /document\.startViewTransition\(\(\) => \{([\s\S]*?)\n\s*\}\);/);
+  assert.match(open, /startSingularityTransition\(/);
+  assert.match(close, /startSingularityTransition\(/);
   assert.match(open, /timer\.style\.viewTransitionName = 'timer-singularity';/);
-  assert.match(openTransition, /^\s*timer\.style\.viewTransitionName = '';\s+dialog\.style\.viewTransitionName = 'timer-singularity';\s+showStartDialog\(\);/);
-
-  const closeTransition = block(close, /document\.startViewTransition\(\(\) => \{([\s\S]*?)\n\s*\}\);/);
+  assert.match(open, /timer\.style\.viewTransitionName = '';\s+dialog\.style\.viewTransitionName = 'timer-singularity';\s+showStartDialog\(\);/);
   assert.match(close, /dialog\.style\.viewTransitionName = 'timer-singularity';/);
-  assert.match(closeTransition, /^\s*dialog\.style\.viewTransitionName = '';\s+timer\.style\.viewTransitionName = 'timer-singularity';\s+closeDialog\(\);/);
-  assert.match(open, /transition\.finished\.then\([^]*dialog\.style\.viewTransitionName = ''/);
-  assert.match(close, /transition\.finished\.then\([^]*timer\.style\.viewTransitionName = ''/);
+  assert.match(close, /dialog\.style\.viewTransitionName = '';\s+timer\.style\.viewTransitionName = 'timer-singularity';\s+closeDialog\(\);/);
 
   assert.match(main, /function showStartDialog\(\) \{[\s\S]*dialog\.showModal\(\);/);
   assert.match(main, /function closeDialog\(\) \{[\s\S]*dialog\.close\(\);/);
@@ -57,4 +49,18 @@ test('progressively morphs the timer through the start dialog', () => {
       new RegExp(`${selector.replace(/[()]/g, '\\$&')}\\s*(?:,\\s*[^{}]+)?\\{\\s*animation:\\s*none\\s*!important;\\s*\\}`),
     );
   }
+});
+
+test('serializes singularity transactions and cleans up owned names', () => {
+  const helper = block(main, /function startSingularityTransition\(prepare, start, update, fallback\) \{([\s\S]*?)\n\}\n\nfunction openStartDialog/);
+  const cleanup = block(helper, /const cleanup = \(\) => \{([\s\S]*?)\n  \};/);
+
+  assert.match(main, /let singularityTransition;/);
+  assert.match(helper, /if \(singularityTransition\) return false;/);
+  assert.ok(helper.indexOf('if (singularityTransition) return false;') < helper.indexOf('document.startViewTransition'));
+  assert.match(helper, /const transaction = \{\};\s+singularityTransition = transaction;/);
+  assert.match(cleanup, /if \(singularityTransition !== transaction\) return;\s+timer\.style\.viewTransitionName = '';\s+dialog\.style\.viewTransitionName = '';\s+singularityTransition = null;/);
+  assert.match(helper, /transition\.ready\.catch\(cleanup\);/);
+  assert.match(helper, /transition\.finished\.then\(cleanup, cleanup\);/);
+  assert.match(helper, /catch \{\s+cleanup\(\);\s+fallback\(\);/);
 });

@@ -30,6 +30,7 @@ let activeFacts = ensureFactCount(facts, [], arrivedAt, MIN_FACTS);
 let lastSummonAt = arrivedAt;
 let restoreTimerFocus = false;
 let horizonScene;
+let singularityTransition;
 
 function elapsedSeconds(now = Date.now()) {
   return Math.max(0, (now - startedAt) / 1_000);
@@ -197,60 +198,68 @@ function closeDialog() {
   if (dialog.open) dialog.close();
 }
 
-function openStartDialog() {
-  restoreTimerFocus = true;
-  startError.textContent = '';
-  startInput.max = localInputValue(Date.now());
-  startInput.value = localInputValue(startedAt);
-  horizonScene?.setDilation(true);
-  experience.classList.add('is-dilating');
+function startSingularityTransition(prepare, start, update, fallback) {
+  if (singularityTransition) return false;
+  prepare();
 
   if (typeof document.startViewTransition !== 'function') {
-    showStartDialog();
-    return;
+    fallback();
+    return true;
   }
 
-  timer.style.viewTransitionName = 'timer-singularity';
+  const transaction = {};
+  singularityTransition = transaction;
+  const cleanup = () => {
+    if (singularityTransition !== transaction) return;
+    timer.style.viewTransitionName = '';
+    dialog.style.viewTransitionName = '';
+    singularityTransition = null;
+  };
+
   try {
-    const transition = document.startViewTransition(() => {
+    start();
+    const transition = document.startViewTransition(update);
+    transition.ready.catch(cleanup);
+    transition.finished.then(cleanup, cleanup);
+  } catch {
+    cleanup();
+    fallback();
+  }
+  return true;
+}
+
+function openStartDialog() {
+  startSingularityTransition(
+    () => {
+      restoreTimerFocus = true;
+      startError.textContent = '';
+      startInput.max = localInputValue(Date.now());
+      startInput.value = localInputValue(startedAt);
+      horizonScene?.setDilation(true);
+      experience.classList.add('is-dilating');
+    },
+    () => { timer.style.viewTransitionName = 'timer-singularity'; },
+    () => {
       timer.style.viewTransitionName = '';
       dialog.style.viewTransitionName = 'timer-singularity';
       showStartDialog();
-    });
-    transition.finished.then(
-      () => { dialog.style.viewTransitionName = ''; },
-      () => { dialog.style.viewTransitionName = ''; },
-    );
-  } catch {
-    timer.style.viewTransitionName = '';
-    dialog.style.viewTransitionName = '';
-    showStartDialog();
-  }
+    },
+    showStartDialog,
+  );
 }
 
 function closeStartDialog() {
   if (!dialog.open) return;
-  if (typeof document.startViewTransition !== 'function') {
-    closeDialog();
-    return;
-  }
-
-  dialog.style.viewTransitionName = 'timer-singularity';
-  try {
-    const transition = document.startViewTransition(() => {
+  startSingularityTransition(
+    () => {},
+    () => { dialog.style.viewTransitionName = 'timer-singularity'; },
+    () => {
       dialog.style.viewTransitionName = '';
       timer.style.viewTransitionName = 'timer-singularity';
       closeDialog();
-    });
-    transition.finished.then(
-      () => { timer.style.viewTransitionName = ''; },
-      () => { timer.style.viewTransitionName = ''; },
-    );
-  } catch {
-    dialog.style.viewTransitionName = '';
-    timer.style.viewTransitionName = '';
-    closeDialog();
-  }
+    },
+    closeDialog,
+  );
 }
 
 timer.addEventListener('click', openStartDialog);
