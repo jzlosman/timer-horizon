@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-07-24T13:26:45Z",
+  "title": "Design System: Timer Horizon",
+  "extensions": {
+    "colorMeta": {
+      "void": { "role": "neutral", "displayName": "Soot Void", "canonical": "#060504", "tonalRamp": ["#060504", "#1a1511", "#32271d", "#59412b", "#85613d", "#b68a56", "#dfb77d", "#f7e6c9"] },
+      "mineral": { "role": "neutral", "displayName": "Mineral Light", "canonical": "#f4e3c6", "tonalRamp": ["#30281f", "#544737", "#786653", "#9d8870", "#c2aa8d", "#e3cdb0", "#f4e3c6", "#fff7e8"] },
+      "ember": { "role": "secondary", "displayName": "Ember Red", "canonical": "#ff4a0e", "tonalRamp": ["#310900", "#5b1300", "#872000", "#b93205", "#e3430b", "#ff4a0e", "#ff8c66", "#ffc7b3"] },
+      "gold": { "role": "primary", "displayName": "Accretion Gold", "canonical": "#f4a83c", "tonalRamp": ["#291800", "#513200", "#7d500c", "#aa7422", "#d99432", "#f4a83c", "#ffd08a", "#ffedca"] }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Human Clock", "purpose": "The central duration only." },
+      "body": { "displayName": "Field Notation", "purpose": "Facts, labels, and technical texture." }
+    },
+    "shadows": [
+      { "name": "stellar-bloom", "value": "0 0 1.2rem rgba(244,168,60,0.35), 0 0 3.5rem rgba(255,74,14,0.18)", "purpose": "Depth around the fallback event horizon only." }
+    ],
+    "motion": [
+      { "name": "fact-drift", "value": "950ms linear", "purpose": "Slow readable movement of active facts." },
+      { "name": "ring-opacity", "value": "800ms ease", "purpose": "WebGL-to-fallback ring transition." }
+    ],
+    "breakpoints": [
+      { "name": "mobile", "value": "700px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Horizon Timer",
+      "kind": "custom",
+      "refersTo": "horizon-timer",
+      "description": "The only stable, human-scale control in the field.",
+      "html": "<button class=\"ds-timer\">5 minutes, 12 seconds<span>since you arrived</span></button>",
+      "css": ".ds-timer { background: transparent; border: 0; color: #f4e3c6; font-family: Iowan Old Style, Baskerville, Georgia, serif; font-size: clamp(2.8rem, 6.5vw, 6.6rem); letter-spacing: -0.055em; line-height: .92; padding: 2rem; text-align: center; } .ds-timer span { color: #c8b69a; display: block; font-family: ui-monospace, monospace; font-size: .6rem; letter-spacing: .24em; margin-top: .7rem; text-transform: uppercase; } .ds-timer:hover, .ds-timer:focus-visible { color: #fff7e8; outline: 1px solid #f4a83c; outline-offset: .35rem; }"
+    },
+    {
+      "name": "Start-Time Field",
+      "kind": "input",
+      "refersTo": "start-time",
+      "description": "A native date-time field with only one warm focus rule.",
+      "html": "<input class=\"ds-time\" type=\"datetime-local\" aria-label=\"Start time\">",
+      "css": ".ds-time { background: transparent; border: 0; border-bottom: 1px solid rgba(244,227,198,.35); border-radius: 0; color: #f4e3c6; min-height: 3rem; padding: .4rem 0; } .ds-time:hover, .ds-time:focus-visible { border-bottom-color: #f4a83c; outline: 0; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Planetary Totalizer",
+    "overview": "Timer Horizon is an after-hours scientific instrument: a full-screen typographic current collapsing toward a luminous central event horizon. The central duration is the only calm, human-scale object. Everything else—abstract glyphs, living figures, and light—moves because the world is larger than the visitor's clock.",
+    "keyCharacteristics": ["A plain-language duration inside a living accretion ring.", "A soot-dark field, mineral text, and hot stellar light.", "Shader-driven currents plus a resilient HTML content layer.", "No cards, graph furniture, terminal tropes, or chrome-heavy controls."],
+    "rules": [
+      { "name": "The One-Star Rule", "body": "The event horizon is the only major saturated form. Facts can borrow its pale heat; nothing else competes with it.", "section": "colors" },
+      { "name": "The Human-Clock Rule", "body": "The duration always uses words such as 5 minutes, 12 seconds, never a digit-only stopwatch.", "section": "typography" }
+    ],
+    "dos": ["Do make streams bend, shear, accelerate, and disappear toward the event horizon.", "Do keep facts readable, rate-driven, and visibly separate from the abstract glyph field.", "Do preserve the central duration and accessible content when effects are unavailable."],
+    "donts": ["Don't render fake code, terminal windows, charts, HUD brackets, or literal black-hole imagery.", "Don't use rainbow color, green-on-black hacker styling, or multiple glowing focal points.", "Don't distort the central timer or place moving facts over it."]
+  }
+}

@@ -146,8 +146,8 @@ git commit -m "feat: build Timer Horizon experience"
 
 **Step 1: Run automated checks**
 
-Run: `npm test && npm run check && npm run build`
-Expected: all checks pass.
+Run: `npm test && npm run check`
+Expected: all checks pass. This is an unbundled static site; the browser smoke check exercises the served surface rather than a no-op build step.
 
 **Step 2: Inspect the app at desktop and mobile widths**
 
