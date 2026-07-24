@@ -92,10 +92,13 @@ function createFactNode(active) {
   value.className = 'fact-value';
   const unit = document.createElement('span');
   unit.className = 'fact-unit';
+  const conjunction = document.createElement('span');
+  conjunction.className = 'fact-conjunction';
+  conjunction.setAttribute('aria-hidden', 'true');
   const explainer = document.createElement('span');
   explainer.className = 'fact-explainer';
   element.style.setProperty('--fact-value-slot', `${FACT_VALUE_SLOT_CHARS}ch`);
-  factBody.append(value, unit);
+  factBody.append(value, unit, conjunction);
   element.append(factBody, explainer);
   factsElement.append(element);
   nodes.set(active.fact.id, element);
