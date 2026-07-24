@@ -41,6 +41,7 @@ function glyphMaterial(atlas) {
       uAtlas: { value: atlas.texture },
       uColumns: { value: atlas.columns },
       uRows: { value: atlas.rows },
+      uHorizonOffset: { value: 0.11 },
     },
     vertexShader: `
       attribute float aSeed;
@@ -51,6 +52,7 @@ function glyphMaterial(atlas) {
       varying float vHeat;
       uniform float uTime;
       uniform float uPixelRatio;
+      uniform float uHorizonOffset;
 
       float hash(float n) { return fract(sin(n) * 43758.5453123); }
 
@@ -63,14 +65,20 @@ function glyphMaterial(atlas) {
         float bend = (1.0 - radius / 1.55) * (1.45 + hash(aSeed * 5.3) * 1.25) * side;
         float angle = entry + bend + (side < 0.0 ? 0.0 : 3.14159265);
         vec2 point = vec2(cos(angle) * radius, sin(angle) * radius * 0.68);
-        point.y += sin(uTime * 0.08 + aSeed * 31.0) * 0.026;
+        float upperStratum = step(0.72, hash(aSeed * 17.4));
+        vec2 upperPoint = vec2(
+          side * (1.6 - cycle * 2.1),
+          0.65 - cycle * 0.58 + sin(uTime * 0.06 + aSeed * 23.0) * 0.04
+        );
+        point = mix(point, upperPoint, upperStratum);
+        point.y += uHorizonOffset + sin(uTime * 0.08 + aSeed * 31.0) * 0.026;
         float heat = 1.0 - smoothstep(0.12, 0.54, radius);
         float fadeIn = smoothstep(0.0, 0.08, cycle);
         float fadeOut = 1.0 - smoothstep(0.76, 1.0, cycle);
         vGlyph = aGlyph;
-        vAlpha = (0.18 + aDepth * 0.46 + heat * 0.16) * fadeIn * fadeOut;
+        vAlpha = (0.18 + aDepth * 0.46 + heat * 0.16) * fadeIn * fadeOut * mix(1.0, 0.78, upperStratum);
         vHeat = heat;
-        gl_PointSize = (1.7 + aDepth * 4.1 + heat * 1.4) * uPixelRatio;
+        gl_PointSize = (1.8 + aDepth * 4.8 + heat * 1.4 + upperStratum * 1.1) * uPixelRatio;
         gl_Position = vec4(point, 0.0, 1.0);
       }
     `,
@@ -100,21 +108,22 @@ function ringMaterial() {
     transparent: true,
     depthWrite: false,
     blending: THREE.AdditiveBlending,
-    uniforms: { uTime: { value: 0 }, uAspect: { value: window.innerWidth / window.innerHeight } },
+    uniforms: { uTime: { value: 0 }, uAspect: { value: window.innerWidth / window.innerHeight }, uCenterY: { value: 0.055 } },
     vertexShader: `varying vec2 vUv; void main() { vUv = uv; gl_Position = vec4(position, 1.0); }`,
     fragmentShader: `
       varying vec2 vUv;
       uniform float uTime;
       uniform float uAspect;
+      uniform float uCenterY;
       float hash(vec2 p) { return fract(sin(dot(p, vec2(41.19, 289.77))) * 45758.5453); }
       void main() {
-        vec2 p = vUv - 0.5;
+        vec2 p = vUv - vec2(0.5, 0.5 + uCenterY);
         p.x *= uAspect * 0.58;
         float angle = atan(p.y, p.x);
         float radius = length(p);
         float turbulence = sin(angle * 8.0 + uTime * 0.38) * 0.005 + sin(angle * 21.0 - uTime * 0.21) * 0.002;
-        float rim = 1.0 - smoothstep(0.003, 0.018, abs(radius - 0.225 - turbulence));
-        float halo = 1.0 - smoothstep(0.015, 0.072, abs(radius - 0.225 - turbulence));
+        float rim = 1.0 - smoothstep(0.003, 0.018, abs(radius - 0.205 - turbulence));
+        float halo = 1.0 - smoothstep(0.015, 0.072, abs(radius - 0.205 - turbulence));
         float brokenLight = 0.58 + sin(angle * 11.0 + uTime * 0.3) * 0.14 + sin(angle * 29.0 - uTime * 0.12) * 0.08;
         float innerHeat = 1.0 - smoothstep(0.188, 0.255, radius);
         vec3 ember = mix(vec3(0.92, 0.10, 0.015), vec3(1.0, 0.85, 0.56), innerHeat);
@@ -135,7 +144,7 @@ export function createHorizonScene(canvas, { reducedMotion = false, onContextLos
   const scene = new THREE.Scene();
   const camera = new THREE.Camera();
   const atlas = glyphAtlas();
-  const count = glyphCountForDensity(window.innerWidth < 700 ? 1300 : 4600, false);
+  const count = glyphCountForDensity(window.innerWidth < 700 ? 1800 : 7200, false);
   const geometry = new THREE.BufferGeometry();
   geometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array(count * 3), 3));
   geometry.setAttribute('aSeed', new THREE.BufferAttribute(Float32Array.from({ length: count }, () => Math.random()), 1));

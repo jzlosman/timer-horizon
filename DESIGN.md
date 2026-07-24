@@ -83,11 +83,11 @@ Color is physical light, not scattered accent paint. The field is almost neutral
 
 ## Layout
 
-The viewport is the composition. A protected central void belongs to the timer; facts travel outside it on named lanes and the microglyph currents cross the remaining field. Desktop permits up to eight concurrent facts. Mobile preserves the singularity by assigning facts to exterior lanes rather than compressing them into cards.
+The viewport is the composition. Its optical center sits slightly above the geometric midpoint: the timer owns a protected central void, two exterior lanes charge the upper perimeter, and the lower lanes give the current a long falloff. Microglyph currents cross the remaining field, including a sparse upper stratum that folds into the horizon. Desktop permits up to eight concurrent facts. Mobile preserves the singularity by assigning facts to exterior lanes rather than compressing them into cards.
 
 ## Elevation & Depth
 
-There are no panels or conventional shadows. Depth comes from particle parallax, velocity, fading, and the ring's additive bloom. The timer and fact layer are crisp semantic HTML above the visual field. On non-WebGL or reduced-motion devices, a still multi-band dust ring keeps the central form legible.
+There are no panels or conventional shadows. Depth comes from particle parallax, a slow upper-to-horizon fall, velocity, fading, and the ring's additive bloom. The timer and fact layer are crisp semantic HTML above the visual field. On non-WebGL or reduced-motion devices, a still multi-band dust ring keeps the central form legible.
 
 ## Shapes
 
@@ -108,7 +108,7 @@ No rounded containers. The event horizon is the recurring form: a broken ellipti
 ## Do's and Don'ts
 
 ### Do:
-- **Do** make streams bend, shear, accelerate, and disappear toward the event horizon.
+- **Do** make streams first occupy the upper field, then bend, shear, accelerate, and disappear toward the event horizon.
 - **Do** keep facts readable, rate-driven, and visibly separate from the abstract glyph field.
 - **Do** preserve the central duration and accessible content when effects are unavailable.
 

@@ -5,7 +5,7 @@
   --mineral-dim: #c8b69a;
   --ember: #ff4a0e;
   --gold: #f4a83c;
-  --ring-width: min(43vw, 35rem);
+  --ring-width: min(39vw, 32rem);
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 }
 
@@ -52,7 +52,7 @@ button { cursor: pointer; }
   left: 50%;
   pointer-events: none;
   position: absolute;
-  top: 50%;
+  top: 45%;
   transform: translate(-50%, -50%);
   width: 100%;
   z-index: 1;
@@ -109,7 +109,7 @@ button { cursor: pointer; }
   padding: 2rem;
   position: absolute;
   text-align: center;
-  top: 50%;
+  top: 45%;
   transform: translate(-50%, -50%);
   width: min(84vw, 46rem);
   z-index: 3;
@@ -133,6 +133,8 @@ button { cursor: pointer; }
 }
 
 .timer:hover #duration, .timer:focus-visible #duration { color: #fff7e8; }
+.timer:is(:hover, :focus-visible) .timer-caption { color: transparent; position: relative; }
+.timer:is(:hover, :focus-visible) .timer-caption::after { color: var(--gold); content: 'choose a beginning'; left: 50%; position: absolute; transform: translateX(-50%); white-space: nowrap; }
 .timer:focus-visible { outline: 1px solid color-mix(in srgb, var(--gold) 72%, transparent); outline-offset: 0.35rem; }
 
 #facts { inset: 0; pointer-events: none; position: absolute; z-index: 2; }
@@ -171,7 +173,7 @@ button { cursor: pointer; }
   z-index: 3;
 }
 
-#experience:hover .field-instruction { opacity: 0; }
+#experience:hover .field-instruction, .field-instruction.is-quiet { opacity: 0; }
 
 #start-dialog {
   background: #0b0806;

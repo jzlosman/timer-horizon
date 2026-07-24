@@ -16,13 +16,15 @@ const form = document.querySelector('#start-form');
 const startInput = document.querySelector('#start-time');
 const startError = document.querySelector('#start-error');
 const cancelStart = document.querySelector('#cancel-start');
+const fieldInstruction = document.querySelector('.field-instruction');
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const nodes = new Map();
 
-let startedAt = Date.now();
+const arrivedAt = Date.now();
+let startedAt = arrivedAt;
 let customStart = false;
-let activeFacts = ensureFactCount(facts, [], Date.now(), MIN_FACTS);
-let lastSummonAt = Date.now();
+let activeFacts = ensureFactCount(facts, [], arrivedAt, MIN_FACTS);
+let lastSummonAt = arrivedAt;
 let restoreTimerFocus = false;
 
 function elapsedSeconds(now = Date.now()) {
@@ -57,14 +59,19 @@ function factPosition(active, now) {
     };
   }
 
-  const lanes = [2.72, -0.38, -2.4, 0.66, -1.36, 1.82, 2.22, -0.95];
-  const entryAngle = lanes[active.slot ?? 0] + (active.seed - 0.5) * 0.28;
-  const bendDirection = active.slot % 2 ? -1 : 1;
-  const angle = entryAngle + bendDirection * progress * 0.82;
-  const radius = 0.86 - progress * 0.42;
-  const x = 50 + Math.cos(angle) * radius * 48;
-  const y = 50 + Math.sin(angle) * radius * 32;
-  return { x, y, opacity: Math.max(0, fade), angle: `${(angle * 180) / Math.PI * 0.06}deg` };
+  const lanes = [
+    { x: 24, y: 20, dx: 11, dy: 12 }, { x: 76, y: 24, dx: -12, dy: 10 },
+    { x: 18, y: 68, dx: 16, dy: -8 }, { x: 82, y: 71, dx: -16, dy: -10 },
+    { x: 43, y: 10, dx: 3, dy: 21 }, { x: 58, y: 86, dx: -3, dy: -22 },
+    { x: 8, y: 42, dx: 20, dy: 2 }, { x: 92, y: 45, dx: -20, dy: 0 },
+  ];
+  const lane = lanes[active.slot ?? 0];
+  return {
+    x: lane.x + lane.dx * progress,
+    y: lane.y + lane.dy * progress,
+    opacity: Math.max(0, fade),
+    angle: `${(active.seed - 0.5) * 3}deg`,
+  };
 }
 
 function createFactNode(active) {
@@ -137,6 +144,7 @@ function updateTimer(now) {
 
 function tick() {
   const now = Date.now();
+  if (now - arrivedAt > 9_000) fieldInstruction.classList.add('is-quiet');
   if (!reducedMotion) {
     activeFacts = activeFacts.filter(({ expiresAt }) => expiresAt > now);
     if (now - lastSummonAt >= 10_000) summon(now);
@@ -184,6 +192,7 @@ form.addEventListener('submit', (event) => {
 
 document.addEventListener('click', (event) => {
   if (event.target.closest('button, a, input, dialog, .fact')) return;
+  fieldInstruction.classList.add('is-quiet');
   summon();
   tick();
 });
