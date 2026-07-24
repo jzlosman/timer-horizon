@@ -22,7 +22,10 @@
       { "name": "cursor-wake", "value": "shader-decayed pointer vector", "purpose": "A visual-only disturbance in the abstract glyph flow." },
       { "name": "rim-precession", "value": "continuous shader light seam", "purpose": "A slow orbital movement that keeps the horizon alive." },
       { "name": "fact-materialization", "value": "420ms staggered every 3–5 seconds", "purpose": "Facts update quietly without a synchronized numerical churn." },
-      { "name": "fact-orbital-arrival", "value": "900–1100ms bounded CSS orbit with a 1200ms shader pulse", "purpose": "A fact's first readable arrival visibly bends the local glyph current, then settles." }
+      { "name": "fact-local-lensing", "value": "1200ms bounded shader pulse", "purpose": "A fact's readable arrival bends and brightens nearby abstract glyphs without warping the DOM fact." },
+      { "name": "celestial-conjunction", "value": "1100ms bounded CSS sequence", "purpose": "One orbital outline closes, sheds a warm outer trace, and settles on a fact's readable arrival." },
+      { "name": "dialog-field-dilation", "value": "open-dialog state", "purpose": "The visual field slows only while the native start-time dialog is open." },
+      { "name": "timer-dialog-transition", "value": "680ms same-document View Transition", "purpose": "The timer carries into and out of the dialog where supported; native dialog and reduced-motion paths remain usable fallbacks." }
     ],
     "breakpoints": [
       { "name": "mobile", "value": "700px" }
@@ -49,7 +52,7 @@
   "narrative": {
     "northStar": "The Observatory Edition",
     "overview": "Timer Horizon is an after-hours scientific instrument: a full-screen typographic current collapsing toward a luminous central event horizon. The central duration is the only calm, human-scale object inside an otherwise black core. Everything else—abstract glyphs, living figures, and light—arrives from beyond the field and vanishes at the rim.",
-    "keyCharacteristics": ["A composed duration inside a breathing accretion ring.", "A soot-dark field, mineral text, and hot stellar light.", "A broad, readable letter-and-number infall, orbiting fact bodies, a precessing rim, a cursor wake, and a resilient HTML content layer.", "No cards, graph furniture, terminal tropes, or chrome-heavy controls."],
+    "keyCharacteristics": ["A composed duration inside a breathing accretion ring.", "A soot-dark field, mineral text, and hot stellar light.", "A broad, readable letter-and-number infall, fact-local lensing with one celestial conjunction at readable arrival, a precessing rim, a cursor wake, and a resilient HTML content layer.", "No cards, graph furniture, terminal tropes, or chrome-heavy controls."],
     "rules": [
       { "name": "The One-Star Rule", "body": "The event horizon is the only major saturated form. Facts can borrow its pale heat; nothing else competes with it. Its breathing rim and precessing seam keep that focal point alive.", "section": "colors" },
       { "name": "The Human-Clock Rule", "body": "The duration always uses words such as 5 minutes, 12 seconds, never a digit-only stopwatch.", "section": "typography" }
