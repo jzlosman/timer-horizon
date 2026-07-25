@@ -23,6 +23,10 @@ export function resumeFact(active, now) {
   return { ...resumed, bornAt: active.bornAt + pausedFor, expiresAt: active.expiresAt + pausedFor };
 }
 
+export function eligibleFacts(facts, elapsedSeconds) {
+  return facts.filter(({ minimumElapsedSeconds = 0 }) => elapsedSeconds >= minimumElapsedSeconds);
+}
+
 export function spawnFact(facts, active, now, random = Math.random) {
   const activeIds = new Set(active.map(({ fact }) => fact.id));
   const fact = chooseFact(facts, activeIds, random);

@@ -36,7 +36,12 @@ test('Wallpaper Engine package is self-contained and opens its local web entry p
 
   assert.match(readPackageFile('index.html'), /<script type="module" src="\.\/src\/main\.mjs"><\/script>/);
   assert.doesNotMatch(readPackageFile('index.html'), /https?:\/\//);
-  assert.match(readPackageFile('src/main.mjs'), /import facts from '\.\/facts\.mjs';/);
+  const main = readPackageFile('src/main.mjs');
+  const lifecycle = readPackageFile('src/fact-lifecycle.mjs');
+  assert.match(main, /import facts from '\.\/facts\.mjs';/);
+  assert.match(lifecycle, /export function eligibleFacts\(facts, elapsedSeconds\)/);
+  assert.match(main, /ensureFactCount\(eligibleFacts\(facts, elapsedSeconds\(arrivedAt\)\), \[\], arrivedAt, MIN_FACTS\)/);
+  assert.match(main, /spawnFact\(eligibleFacts\(facts, elapsedSeconds\(now\)\), activeFacts, now\)/);
   assert.match(readPackageFile('src/horizon-scene.mjs'), /\.\.\/vendor\/three\.module\.js/);
   assert.doesNotMatch(readPackageFile('src/horizon-scene.mjs'), /https?:\/\//);
 });

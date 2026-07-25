@@ -2,7 +2,7 @@ import facts from './facts.mjs';
 
 import { formatCalendarDuration, formatCalendarDurationParts, valueForElapsed } from './fact-engine.mjs';
 import { FACT_VALUE_SLOT_CHARS, factExplainer, factUnit, formatFactValue, valueUpdateInterval } from './fact-presentation.mjs';
-import { ensureFactCount, factTime, isFactExpired, MAX_FACTS, MIN_FACTS, pauseFact, resumeFact, spawnFact } from './fact-lifecycle.mjs';
+import { eligibleFacts, ensureFactCount, factTime, isFactExpired, MAX_FACTS, MIN_FACTS, pauseFact, resumeFact, spawnFact } from './fact-lifecycle.mjs';
 import { createHorizonScene } from './horizon-scene.mjs';
 import { localInputValue, parsePastLocalTime } from './time-control.mjs';
 
@@ -29,7 +29,7 @@ backgroundAudio.volume = 0.16;
 const arrivedAt = Date.now();
 let startedAt = arrivedAt;
 let customStart = false;
-let activeFacts = ensureFactCount(facts, [], arrivedAt, MIN_FACTS);
+let activeFacts = ensureFactCount(eligibleFacts(facts, elapsedSeconds(arrivedAt)), [], arrivedAt, MIN_FACTS);
 let lastSummonAt = activeFacts.at(-1)?.bornAt ?? arrivedAt;
 let restoreTimerFocus = false;
 let horizonScene;
@@ -171,7 +171,7 @@ function renderFacts(now) {
 
 function summon(now = Date.now()) {
   if (activeFacts.length >= MAX_FACTS) return;
-  const fact = spawnFact(facts, activeFacts, now);
+  const fact = spawnFact(eligibleFacts(facts, elapsedSeconds(now)), activeFacts, now);
   if (fact) {
     activeFacts.push(fact);
     lastSummonAt = now;
@@ -210,7 +210,7 @@ function tick() {
     });
     activeFacts = activeFacts.filter((active) => !isFactExpired(active, now));
     if (now - lastSummonAt >= 10_000) summon(now);
-    activeFacts = ensureFactCount(facts, activeFacts, now, MIN_FACTS);
+    activeFacts = ensureFactCount(eligibleFacts(facts, elapsedSeconds(now)), activeFacts, now, MIN_FACTS);
   }
   updateTimer(now);
   renderFacts(now);

@@ -4,7 +4,7 @@ import test from 'node:test';
 
 import * as lifecycle from '../src/fact-lifecycle.mjs';
 
-const { ensureFactCount, spawnFact } = lifecycle;
+const { eligibleFacts, ensureFactCount, spawnFact } = lifecycle;
 const main = await readFile(new URL('../src/main.mjs', import.meta.url), 'utf8');
 
 const facts = [
@@ -14,6 +14,21 @@ const facts = [
   { id: 'd', rate: 1, period: 'second' },
   { id: 'e', rate: 1, period: 'second' },
 ];
+
+test('defers facts until their minimum elapsed time has passed', () => {
+  assert.equal(typeof eligibleFacts, 'function');
+  const slowFact = { id: 'slow', minimumElapsedSeconds: 43_200 };
+  const availableNow = eligibleFacts([{ id: 'fast' }, slowFact], 420);
+
+  assert.deepEqual(availableNow.map(({ id }) => id), ['fast']);
+  assert.deepEqual(eligibleFacts([{ id: 'fast' }, slowFact], 43_200).map(({ id }) => id), ['fast', 'slow']);
+});
+
+test('selects only facts eligible at the visit elapsed time', () => {
+  assert.match(main, /let activeFacts = ensureFactCount\(eligibleFacts\(facts, elapsedSeconds\(arrivedAt\)\), \[\], arrivedAt, MIN_FACTS\);/);
+  assert.match(main, /spawnFact\(eligibleFacts\(facts, elapsedSeconds\(now\)\), activeFacts, now\);/);
+  assert.match(main, /activeFacts = ensureFactCount\(eligibleFacts\(facts, elapsedSeconds\(now\)\), activeFacts, now, MIN_FACTS\);/);
+});
 
 test('spawned facts have a bounded lifetime and no active duplicate', () => {
   const fact = spawnFact(facts, [{ fact: facts[0] }], 10_000, () => 0.5);
