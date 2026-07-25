@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#060504" />
+    <meta name="description" content="A living time instrument." />
+    <title>Timer Horizon</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body class="no-webgl">
+    <audio id="background-audio" loop preload="auto">
+      <source src="./assets/background.mp3" type="audio/mpeg" />
+    </audio>
+    <canvas id="field" aria-hidden="true"></canvas>
+    <main id="experience" aria-label="Timer Horizon">
+      <p class="wordmark" aria-hidden="true">Timer Horizon</p>
+      <button id="sound-toggle" class="sound-toggle" type="button" aria-pressed="false" aria-label="Turn background sound on">Sound off</button>
+      <section id="facts" aria-label="Live rate facts"></section>
+      <div class="horizon" aria-hidden="true"><div class="fallback-ring"></div></div>
+      <button id="timer" class="timer" type="button" aria-haspopup="dialog" aria-label="Change the timer starting time">
+        <span id="duration">0 seconds</span>
+        <span class="timer-caption">since you arrived</span>
+      </button>
+      <p class="field-instruction" aria-hidden="true">click the field to draw another current</p>
+    </main>
+
+    <dialog id="start-dialog" aria-labelledby="dialog-title">
+      <form id="start-form" method="dialog">
+        <p class="dialog-kicker">Timer Horizon</p>
+        <h1 id="dialog-title">Choose a beginning.</h1>
+        <label for="start-time">Start time</label>
+        <input id="start-time" name="start-time" type="datetime-local" required />
+        <p id="start-error" class="dialog-error" role="alert"></p>
+        <div class="dialog-actions">
+          <button value="cancel" type="button" id="cancel-start">Keep this visit</button>
+          <button value="confirm" type="submit">Set horizon</button>
+        </div>
+      </form>
+    </dialog>
+
+    <script type="module" src="./src/main.mjs"></script>
+  </body>
+</html>

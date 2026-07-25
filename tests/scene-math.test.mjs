@@ -3,7 +3,6 @@ import test from 'node:test';
 
 import {
   advanceGlyph,
-  factArrivalPulse,
   glyphCountForDensity,
   gravitationalPull,
   interpolateSceneTempo,
@@ -32,11 +31,4 @@ test('a dilated scene moves at singularity tempo', () => {
 test('scene tempo eases toward the dialog state instead of jumping', () => {
   assert.equal(interpolateSceneTempo(1, true, 0.1), 0.916);
   assert.equal(interpolateSceneTempo(0.16, false, 0.1), 0.244);
-});
-
-test('a fact emits one bounded orbital arrival pulse when it reaches its readable lane', () => {
-  assert.equal(factArrivalPulse(1_000, 999), 0);
-  assert.equal(factArrivalPulse(1_000, 1_000), 1);
-  assert.equal(factArrivalPulse(1_000, 1_600), 0.5);
-  assert.equal(factArrivalPulse(1_000, 2_200), 0);
 });

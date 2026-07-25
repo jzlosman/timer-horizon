@@ -20,4 +20,4 @@ npm run check
 
 ## Content status
 
-`src/facts.json` has 40 provisional, rate-based facts with a stable schema and reserved source fields. The numbers are deliberately uncited in v1; a separate research pass must verify every rate and populate `sourceLabel` / `sourceUrl` before any claim of authoritative sourcing.
+`src/facts.json` has 160 rate-based facts with a stable schema. The 40 original v1 facts remain provisional; 120 additions link to their published source via `sourceLabel` / `sourceUrl`. Slow-building facts may set `minimumElapsedSeconds` so the UI can defer their reveal.

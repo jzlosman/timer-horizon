@@ -16,17 +16,19 @@ export function valueUpdateInterval(seed) {
   return 3_000 + Math.floor(seed * 2_000);
 }
 
-export function formatFactValue({ format, decimalPlaces }, value) {
-  const formatter = new Intl.NumberFormat('en-US', {
-    maximumFractionDigits: decimalPlaces,
-    notation: format === 'compact' ? 'compact' : 'standard',
-  });
-  const display = formatter.format(value);
-  if (display.length <= FACT_VALUE_SLOT_CHARS) return display;
+export function formatFactValue({ decimalPlaces }, value) {
+  const magnitude = Math.abs(value);
+  if (magnitude >= 1e15) return value.toExponential(2).replace('e+', 'e');
+
+  const compact = [[1e12, 'T'], [1e9, 'B'], [1e6, 'M'], [1e3, 'K']].find(([threshold]) => magnitude >= threshold);
+  if (compact) {
+    const [threshold, suffix] = compact;
+    const scaled = value / threshold;
+    const maximumFractionDigits = Math.abs(scaled) < 10 ? 2 : Math.abs(scaled) < 100 ? 1 : 0;
+    return `${new Intl.NumberFormat('en-US', { maximumFractionDigits }).format(scaled)} ${suffix}`;
+  }
 
   return new Intl.NumberFormat('en-US', {
-    compactDisplay: 'short',
-    maximumFractionDigits: 1,
-    notation: 'compact',
+    maximumFractionDigits: Math.min(decimalPlaces, 2),
   }).format(value);
 }

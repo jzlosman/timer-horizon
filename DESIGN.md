@@ -7,10 +7,13 @@ colors:
   mineral-dim: "#c8b69a"
   ember: "#ff4a0e"
   gold: "#f4a83c"
+  violet: "#8254df"
+  blue: "#4ca5ff"
+  green: "#62d69a"
 typography:
   display:
     fontFamily: "Bodoni Moda, Baskerville, Georgia, serif"
-    fontSize: "clamp(3rem, 6.2vw, 6rem)"
+    fontSize: "clamp(2.25rem, 3.6vw, 3.8rem)"
     fontWeight: 500
     lineHeight: 0.86
     letterSpacing: "-0.065em"
@@ -51,20 +54,21 @@ The experience is dense but never dashboard-like. Motion earns the spectacle. Fa
 
 ## Colors
 
-Color is physical light, not scattered accent paint. The field is almost neutral; the event horizon supplies all major heat.
+Color is physical light, not scattered accent paint. The horizon seeds heat, blue, violet, and green that refract through the glyph field and intensify inside each fact's larger local lens; readable text remains mineral.
 
 ### Primary
 - **Accretion Gold:** Carries fact values, focus treatments, and the sharpest part of the luminous ring.
 
 ### Secondary
-- **Ember Red:** Deepens the ring's outer dust and never becomes a second focal element.
+- **Ember Red:** Deepens the ring's outer dust.
+- **Spectral Blue, Violet, and Green:** Travel as restrained gradients through the glyph field, accretion bands, and fact-local glyph bursts; they never replace readable text or control color.
 
 ### Neutral
 - **Soot Void:** Owns the full viewport and makes the moving field feel immeasurable.
 - **Mineral Light:** Keeps the timer and factual copy high-contrast and material rather than clinical.
 - **Weathered Mineral:** Supports low-priority labels and does not compete with facts.
 
-**The One-Star Rule.** The event horizon is the only major saturated form. Facts can borrow its pale heat; nothing else competes with it.
+**The One-Star Rule.** The event horizon remains the brightest saturated form. Facts borrow a local spectral glyph burst, while the timer and controls stay quiet.
 
 ## Typography
 
@@ -79,7 +83,7 @@ Color is physical light, not scattered accent paint. The field is almost neutral
 - **Body:** A stable numerical fact body with its small unit aligned to the number and a smaller, mineral-toned explainer directly beneath it; long explainers may use a second line.
 - **Label:** Tiny uppercase utility copy and modal annotations.
 
-**The Human-Clock Rule.** The duration always uses words such as `5 minutes, 12 seconds`, never a digit-only stopwatch.
+**The Human-Clock Rule.** The duration always uses words such as `5 minutes, 12 seconds`, never a digit-only stopwatch. It uses the largest two nonzero local-calendar units—`2 years, 3 months`, not a 730-day approximation. Large mineral numerals pair with smaller weathered-mineral unit words, and the pairs wrap only between units when the core narrows.
 
 ## Layout
 
@@ -87,13 +91,13 @@ The viewport is the composition. Its optical center sits slightly above the geom
 
 ## Elevation & Depth
 
-There are no panels or conventional shadows. Depth comes from particle parallax, a slow upper-to-horizon fall, velocity, fading, and the ring's additive bloom. The horizon itself breathes almost imperceptibly while a bright seam precesses around its rim. Each fact is a fixed-width numerical body with a small unit aligned to the number and a mineral-toned explainer beneath it; its digits materialize on a staggered three-to-five-second rhythm without moving the caption. A pointer creates a short wake in the abstract glyphs only—never in timer text, facts, or controls. The timer and fact layer are crisp semantic HTML above the visual field. On non-WebGL or reduced-motion devices, a still multi-band dust ring keeps the central form legible.
+There are no panels or conventional shadows. Depth comes from particle parallax, a slow upper-to-horizon fall, velocity, fading, and the ring's additive bloom. The horizon holds thin ember, orange, mineral, blue, violet, and green accretion bands around a core that remains inside their rim. Each fact is a fixed-width numerical body with a small unit aligned to the number and a mineral-toned explainer beneath it; its steady, larger local lens pushes nearby glyphs away into a brighter spectral burst without an arrival pulse. Its digits materialize on a staggered three-to-five-second rhythm without moving the caption. A pointer creates a short wake in the abstract glyphs only—never in timer text, facts, or controls. The timer and fact layer are crisp semantic HTML above the visual field. On non-WebGL or reduced-motion devices, a still multi-band dust ring keeps the central form legible.
 
 ## Motion
 
 Overdrive uses only three intentional sequences:
 
-1. **Readable arrival:** When a fact reaches its readable lane, only nearby abstract glyphs bend and brighten through a bounded, fact-local lens. The fact remains readable DOM content. One celestial conjunction closes its orbital outline, sheds a single warm outer trace, and settles; it does not repeat.
+1. **Continuous lensing:** Every visible fact steadily bends and brightens nearby abstract glyphs through a bounded, fact-local lens. The fact remains readable DOM content; it has no arrival pulse or conjunction animation.
 2. **Open dialog:** While the native start-time dialog is open, the visual field slows into time dilation. The timer, facts, controls, and dialog remain undistorted.
 3. **Timer to dialog:** Where available, a same-document View Transition carries the timer into the dialog and back. The native dialog flow remains the fallback, and reduced motion uses that usable, non-animated path.
 
@@ -126,5 +130,5 @@ No rounded containers. The event horizon is the recurring form: a broken ellipti
 
 ### Don't:
 - **Don't** render fake code, terminal windows, charts, HUD brackets, or literal black-hole imagery.
-- **Don't** use rainbow color, green-on-black hacker styling, or multiple glowing focal points.
+- **Don't** tint the timer, fact copy, controls, or dialog with the spectrum; color belongs to the decorative glyph current and fact-local glyph bursts.
 - **Don't** distort the central timer or place moving facts over it.

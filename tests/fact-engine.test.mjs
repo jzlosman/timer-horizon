@@ -3,7 +3,10 @@ import test from 'node:test';
 
 import {
   chooseFact,
+  formatCalendarDuration,
+  formatCalendarDurationParts,
   formatDuration,
+  formatDurationParts,
   formatNumber,
   valueForElapsed,
 } from '../src/fact-engine.mjs';
@@ -13,6 +16,28 @@ test('formats a human duration without a stopwatch treatment', () => {
   assert.equal(formatDuration(1), '1 second');
   assert.equal(formatDuration(3_661), '1 hour, 1 minute');
   assert.equal(formatDuration(86_401), '1 day, 0 hours');
+});
+
+test('keeps each duration value with its human-readable unit', () => {
+  assert.deepEqual(formatDurationParts(816), [
+    { value: 13, unit: 'minutes' },
+    { value: 36, unit: 'seconds' },
+  ]);
+});
+
+test('formats elapsed time with calendar years and months', () => {
+  assert.equal(
+    formatCalendarDuration(new Date(2024, 6, 24, 15, 41), new Date(2026, 6, 24, 15, 41)),
+    '2 years',
+  );
+  assert.deepEqual(
+    formatCalendarDurationParts(new Date(2024, 0, 31, 12), new Date(2024, 2, 1, 12)),
+    [{ value: 1, unit: 'month' }, { value: 1, unit: 'day' }],
+  );
+  assert.equal(
+    formatCalendarDuration(new Date(2024, 2, 9, 12), new Date(2024, 2, 10, 12)),
+    '1 day',
+  );
 });
 
 test('calculates a fact value from its stated period', () => {

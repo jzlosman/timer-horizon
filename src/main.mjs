@@ -1,13 +1,18 @@
 import facts from './facts.json' with { type: 'json' };
 
-import { formatDuration, valueForElapsed } from './fact-engine.mjs';
+import { formatCalendarDuration, formatCalendarDurationParts, valueForElapsed } from './fact-engine.mjs';
 import { FACT_VALUE_SLOT_CHARS, factExplainer, factUnit, formatFactValue, valueUpdateInterval } from './fact-presentation.mjs';
-import { ensureFactCount, MAX_FACTS, MIN_FACTS, spawnFact } from './fact-lifecycle.mjs';
+import { ensureFactCount, factTime, isFactExpired, MAX_FACTS, MIN_FACTS, pauseFact, resumeFact, spawnFact } from './fact-lifecycle.mjs';
 import { createHorizonScene } from './horizon-scene.mjs';
-import { factArrivalPulse } from './scene-math.mjs';
 import { localInputValue, parsePastLocalTime } from './time-control.mjs';
 
 const body = document.body;
+const backgroundAudio = document.querySelector('#background-audio');
+const soundToggle = document.querySelector('#sound-toggle');
+const factOffer = document.querySelector('#fact-offer');
+const factDialog = document.querySelector('#fact-dialog');
+const factOfferLink = document.querySelector('#fact-offer-link');
+const cancelFactOffer = document.querySelector('#cancel-fact-offer');
 const canvas = document.querySelector('#field');
 const experience = document.querySelector('#experience');
 const factsElement = document.querySelector('#facts');
@@ -23,11 +28,13 @@ const fieldInstruction = document.querySelector('.field-instruction');
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const nodes = new Map();
 
+backgroundAudio.volume = 0.16;
+
 const arrivedAt = Date.now();
 let startedAt = arrivedAt;
 let customStart = false;
 let activeFacts = ensureFactCount(facts, [], arrivedAt, MIN_FACTS);
-let lastSummonAt = arrivedAt;
+let lastSummonAt = activeFacts.at(-1)?.bornAt ?? arrivedAt;
 let restoreTimerFocus = false;
 let horizonScene;
 let singularityTransition;
@@ -76,6 +83,14 @@ function factPosition(active, now) {
   };
 }
 
+function setFactPaused(id, element) {
+  const now = Date.now();
+  activeFacts = activeFacts.map((active) => {
+    if (active.fact.id !== id) return active;
+    return element.matches(':hover, :focus-within') ? pauseFact(active, now) : resumeFact(active, now);
+  });
+}
+
 function createFactNode(active) {
   const hasSource = Boolean(active.fact.sourceUrl);
   const element = document.createElement(hasSource ? 'a' : 'div');
@@ -95,16 +110,18 @@ function createFactNode(active) {
   value.className = 'fact-value';
   const unit = document.createElement('span');
   unit.className = 'fact-unit';
-  const conjunction = document.createElement('span');
-  conjunction.className = 'fact-conjunction';
-  conjunction.setAttribute('aria-hidden', 'true');
-  conjunction.addEventListener('animationend', () => element.classList.remove('is-arriving'));
   const explainer = document.createElement('span');
   explainer.className = 'fact-explainer';
   element.style.setProperty('--fact-value-slot', `${FACT_VALUE_SLOT_CHARS}ch`);
-  factBody.append(value, unit, conjunction);
+  factBody.append(value, unit);
   element.append(factBody, explainer);
+  element.style.setProperty('--fact-opacity', '0');
   factsElement.append(element);
+  const syncFactPause = () => setFactPaused(active.fact.id, element);
+  element.addEventListener('pointerenter', syncFactPause);
+  element.addEventListener('pointerleave', syncFactPause);
+  element.addEventListener('focusin', syncFactPause);
+  element.addEventListener('focusout', syncFactPause);
   nodes.set(active.fact.id, element);
   return element;
 }
@@ -118,25 +135,19 @@ function renderFacts(now) {
     }
   }
 
-  const seconds = elapsedSeconds(now);
   const bodies = [];
   activeFacts.forEach((active) => {
     const node = nodes.get(active.fact.id) || createFactNode(active);
-    const position = factPosition(active, now);
-    const visualArrivalAt = active.bornAt + (active.expiresAt - active.bornAt) * (position.enterAt + 0.12);
-    const arrivalPulse = reducedMotion ? 0 : factArrivalPulse(visualArrivalAt, now);
-    if (arrivalPulse > 0 && !node.dataset.conjunctionStarted) {
-      node.dataset.conjunctionStarted = 'true';
-      node.classList.add('is-arriving');
-    }
+    const factNow = factTime(active, now);
+    const position = factPosition(active, factNow);
     const [factBody, explainer] = node.children;
     const [value, unit] = factBody.children;
     const lastUpdate = Number(node.dataset.valueUpdatedAt || 0);
-    if (now - lastUpdate >= valueUpdateInterval(active.seed)) {
+    if (factNow - lastUpdate >= valueUpdateInterval(active.seed)) {
       const previousValue = value.textContent;
-      const displayValue = formatFactValue(active.fact, valueForElapsed(active.fact, seconds));
+      const displayValue = formatFactValue(active.fact, valueForElapsed(active.fact, elapsedSeconds(factNow)));
       value.textContent = displayValue;
-      node.dataset.valueUpdatedAt = now;
+      node.dataset.valueUpdatedAt = factNow;
       if (previousValue && previousValue !== displayValue && !reducedMotion) {
         value.animate([
           { filter: 'blur(1.5px)', opacity: 0.5, transform: 'scale(0.96)' },
@@ -153,10 +164,10 @@ function renderFacts(now) {
     node.style.setProperty('--fact-opacity', position.opacity);
     node.style.setProperty('--fact-angle', position.angle);
     bodies.push({
+      id: active.fact.id,
       x: position.x,
       y: position.y,
       strength: position.opacity,
-      pulse: arrivalPulse,
     });
   });
   horizonScene?.setBodies(bodies);
@@ -171,8 +182,22 @@ function summon(now = Date.now()) {
   }
 }
 
+function durationPart({ value, unit }) {
+  const element = document.createElement('span');
+  element.className = 'duration-part';
+  const number = document.createElement('span');
+  number.className = 'duration-value';
+  number.textContent = value;
+  const label = document.createElement('span');
+  label.className = 'duration-unit';
+  label.textContent = unit;
+  element.append(number, label);
+  return element;
+}
+
 function updateTimer(now) {
-  duration.textContent = formatDuration(elapsedSeconds(now));
+  duration.replaceChildren(...formatCalendarDurationParts(startedAt, now).map(durationPart));
+  duration.setAttribute('aria-label', formatCalendarDuration(startedAt, now));
   timerCaption.textContent = customStart
     ? `since ${new Intl.DateTimeFormat('en-US', { dateStyle: 'medium', timeStyle: 'short' }).format(startedAt)}`
     : 'since you arrived';
@@ -182,7 +207,12 @@ function tick() {
   const now = Date.now();
   if (now - arrivedAt > 9_000) fieldInstruction.classList.add('is-quiet');
   if (!reducedMotion) {
-    activeFacts = activeFacts.filter(({ expiresAt }) => expiresAt > now);
+    const expiredFacts = activeFacts.filter((active) => isFactExpired(active, now));
+    expiredFacts.forEach((active) => {
+      const position = factPosition(active, factTime(active, now));
+      horizonScene?.signalAt(position.x * window.innerWidth / 100, position.y * window.innerHeight / 100);
+    });
+    activeFacts = activeFacts.filter((active) => !isFactExpired(active, now));
     if (now - lastSummonAt >= 10_000) summon(now);
     activeFacts = ensureFactCount(facts, activeFacts, now, MIN_FACTS);
   }
@@ -198,6 +228,48 @@ function showStartDialog() {
 function closeDialog() {
   if (dialog.open) dialog.close();
 }
+
+function openFactDialog() {
+  if (!factDialog.open) factDialog.showModal();
+  factOfferLink.focus();
+}
+
+function closeFactDialog() {
+  if (factDialog.open) factDialog.close();
+}
+
+function setSoundState(enabled) {
+  soundToggle.setAttribute('aria-pressed', String(enabled));
+  soundToggle.setAttribute('aria-label', `Turn background sound ${enabled ? 'off' : 'on'}`);
+  soundToggle.textContent = `Sound ${enabled ? 'on' : 'off'}`;
+}
+
+async function playBackgroundAudio() {
+  try {
+    await backgroundAudio.play();
+    setSoundState(true);
+  } catch {
+    setSoundState(false);
+  }
+}
+
+function startBackgroundAudio(event) {
+  if (event.target.closest?.('#sound-toggle')) return;
+  document.removeEventListener('pointerdown', startBackgroundAudio);
+  document.removeEventListener('keydown', startBackgroundAudio);
+  void playBackgroundAudio();
+}
+
+soundToggle.addEventListener('click', () => {
+  if (backgroundAudio.paused) void playBackgroundAudio();
+  else {
+    backgroundAudio.pause();
+    setSoundState(false);
+  }
+});
+
+document.addEventListener('pointerdown', startBackgroundAudio);
+document.addEventListener('keydown', startBackgroundAudio);
 
 function startSingularityTransition(prepare, start, update, fallback, pendingAction) {
   if (singularityTransition) {
@@ -273,6 +345,10 @@ function closeStartDialog() {
 
 timer.addEventListener('click', openStartDialog);
 cancelStart.addEventListener('click', closeStartDialog);
+factOffer.addEventListener('click', openFactDialog);
+cancelFactOffer.addEventListener('click', closeFactDialog);
+factOfferLink.addEventListener('click', closeFactDialog);
+factDialog.addEventListener('close', () => factOffer.focus());
 
 dialog.addEventListener('close', () => {
   horizonScene?.setDilation(false);
@@ -305,8 +381,7 @@ form.addEventListener('submit', (event) => {
 document.addEventListener('click', (event) => {
   if (event.target.closest('button, a, input, dialog, .fact')) return;
   fieldInstruction.classList.add('is-quiet');
-  summon();
-  tick();
+  horizonScene?.signalAt(event.clientX, event.clientY);
 });
 
 if (!reducedMotion) {

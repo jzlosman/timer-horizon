@@ -5,6 +5,9 @@
   --mineral-dim: #c8b69a;
   --ember: #ff4a0e;
   --gold: #f4a83c;
+  --violet: #8254df;
+  --blue: #4ca5ff;
+  --green: #62d69a;
   --ring-width: min(39vw, 32rem);
   font-family: 'Familjen Grotesk', 'Helvetica Neue', Arial, sans-serif;
 }
@@ -60,13 +63,13 @@ button { cursor: pointer; }
 }
 
 .fallback-ring {
-  border: 1px dashed color-mix(in srgb, var(--gold) 72%, transparent);
-  border-bottom-color: color-mix(in srgb, var(--ember) 78%, transparent);
-  border-left-color: color-mix(in srgb, var(--mineral) 78%, transparent);
+  border: 1px dashed color-mix(in srgb, var(--blue) 62%, transparent);
+  border-bottom-color: color-mix(in srgb, var(--violet) 64%, transparent);
+  border-left-color: color-mix(in srgb, var(--green) 62%, transparent);
   border-radius: 50%;
-  box-shadow: 0 0 1.2rem color-mix(in srgb, var(--gold) 35%, transparent), 0 0 3.5rem color-mix(in srgb, var(--ember) 18%, transparent);
+  box-shadow: 0 0 1rem color-mix(in srgb, var(--blue) 26%, transparent), 0 0 2.6rem color-mix(in srgb, var(--violet) 14%, transparent);
   height: calc(var(--ring-width) * 0.54);
-  opacity: 0.8;
+  opacity: 0.65;
   position: relative;
   transform: rotate(-7deg);
   transition: opacity 800ms ease;
@@ -82,14 +85,14 @@ button { cursor: pointer; }
 }
 
 .fallback-ring::before {
-  border: 1px dashed color-mix(in srgb, var(--ember) 56%, transparent);
+  border: 1px dashed color-mix(in srgb, var(--green) 52%, transparent);
   border-right-color: transparent;
   inset: -0.45rem 1.5rem;
   transform: rotate(11deg);
 }
 
 .fallback-ring::after {
-  border: 1px solid color-mix(in srgb, var(--mineral) 46%, transparent);
+  border: 1px solid color-mix(in srgb, var(--violet) 46%, transparent);
   border-bottom-color: transparent;
   border-left-color: transparent;
   inset: 0.42rem 0.8rem;
@@ -117,15 +120,36 @@ button { cursor: pointer; }
 }
 
 #duration {
+  align-items: baseline;
+  column-gap: 0.42em;
+  display: flex;
+  flex-wrap: wrap;
   font-family: 'Bodoni Moda', Baskerville, Georgia, serif;
   font-optical-sizing: auto;
-  font-size: clamp(3rem, 6.2vw, 6rem);
+  font-size: clamp(2.25rem, 3.6vw, 3.8rem);
   font-variant-numeric: lining-nums tabular-nums;
   font-weight: 500;
-  letter-spacing: -0.065em;
-  line-height: 0.86;
-  text-wrap: balance;
+  justify-content: center;
+  letter-spacing: -0.045em;
+  line-height: 0.9;
+  max-inline-size: min(100%, 32rem);
+  row-gap: 0.08em;
   text-shadow: 0 0 2.8rem color-mix(in srgb, var(--mineral) 12%, transparent);
+}
+
+.duration-part {
+  align-items: baseline;
+  display: inline-flex;
+  gap: 0.14em;
+  white-space: nowrap;
+}
+
+.duration-value { color: var(--mineral); }
+
+.duration-unit {
+  color: color-mix(in srgb, var(--mineral) 70%, transparent);
+  font-size: 0.58em;
+  letter-spacing: -0.02em;
 }
 
 .timer-caption {
@@ -139,6 +163,45 @@ button { cursor: pointer; }
 .timer:is(:hover, :focus-visible) .timer-caption { color: transparent; position: relative; }
 .timer:is(:hover, :focus-visible) .timer-caption::after { color: var(--gold); content: 'choose a beginning'; left: 50%; position: absolute; transform: translateX(-50%); white-space: nowrap; }
 .timer:focus-visible { outline: 1px solid color-mix(in srgb, var(--gold) 72%, transparent); outline-offset: 0.35rem; }
+
+.sound-toggle {
+  background: transparent;
+  border: 1px solid color-mix(in srgb, var(--mineral) 34%, transparent);
+  color: color-mix(in srgb, var(--mineral) 72%, transparent);
+  font-size: 0.58rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  min-height: 2.75rem;
+  padding: 0.5rem 0.8rem;
+  position: absolute;
+  right: clamp(1rem, 2.5vw, 2.4rem);
+  text-transform: uppercase;
+  top: clamp(1rem, 3vw, 2.4rem);
+  transition: background 180ms ease, border-color 180ms ease, color 180ms ease;
+  z-index: 3;
+}
+
+.sound-toggle[aria-pressed="true"] { border-color: var(--gold); color: var(--gold); }
+.sound-toggle:hover, .sound-toggle:focus-visible { background: color-mix(in srgb, var(--gold) 13%, transparent); outline: 1px solid var(--gold); outline-offset: 0.25rem; }
+
+.fact-offer {
+  background: transparent;
+  border: 0;
+  bottom: clamp(1rem, 3vw, 2.4rem);
+  color: color-mix(in srgb, var(--mineral) 42%, transparent);
+  font-size: 0.58rem;
+  font-weight: 600;
+  left: clamp(1rem, 2.5vw, 2.4rem);
+  letter-spacing: 0.14em;
+  min-height: 2.75rem;
+  padding: 0.5rem 0;
+  position: absolute;
+  text-transform: uppercase;
+  transition: color 180ms ease;
+  z-index: 3;
+}
+
+.fact-offer:hover, .fact-offer:focus-visible { color: var(--gold); outline: 1px solid var(--gold); outline-offset: 0.25rem; }
 
 #facts { inset: 0; pointer-events: none; position: absolute; z-index: 2; }
 
@@ -164,7 +227,6 @@ button { cursor: pointer; }
   align-items: baseline;
   display: inline-flex;
   gap: 0.25rem;
-  position: relative;
 }
 
 .fact-value {
@@ -193,71 +255,14 @@ button { cursor: pointer; }
   white-space: nowrap;
 }
 
-.fact-body::before {
-  border: 1px solid color-mix(in srgb, var(--gold) 38%, transparent);
-  border-bottom-color: transparent;
-  border-left-color: color-mix(in srgb, var(--mineral) 28%, transparent);
-  border-radius: 50%;
-  content: '';
-  inset: -0.42em -0.62em;
-  pointer-events: none;
-  position: absolute;
-  transform: rotate(-12deg);
-}
-
-.fact.is-arriving .fact-body::before {
-  animation: fact-orbit-capture 1.1s cubic-bezier(0.16, 1, 0.3, 1) both;
-}
-
-.fact.is-arriving .fact-body::after {
-  animation: fact-orbit-shed 900ms cubic-bezier(0.16, 1, 0.3, 1) both;
-  border: 1px solid color-mix(in srgb, var(--ember) 42%, transparent);
-  border-radius: 50%;
-  content: '';
-  inset: -0.42em -0.62em;
-  pointer-events: none;
-  position: absolute;
-}
-
-.fact-conjunction {
-  border: 1px solid color-mix(in srgb, var(--mineral) 44%, transparent);
-  border-radius: 50%;
-  clip-path: inset(0 42% 0 0);
-  inset: -0.42em -0.62em;
-  opacity: 0;
-  pointer-events: none;
-  position: absolute;
-}
-
-.fact.is-arriving .fact-conjunction {
-  animation: fact-conjunction 1.1s cubic-bezier(0.16, 1, 0.3, 1) both;
-}
-
-@keyframes fact-orbit-capture {
-  0% { filter: blur(1.5px); opacity: 0; transform: rotate(-58deg) scale(0.7); }
-  56% { filter: blur(0); opacity: 1; transform: rotate(4deg) scale(1.08); }
-  100% { filter: blur(0); opacity: 1; transform: rotate(-12deg) scale(1); }
-}
-
-@keyframes fact-orbit-shed {
-  0% { opacity: 0.8; transform: rotate(-12deg) scale(0.65); }
-  100% { opacity: 0; transform: rotate(20deg) scale(1.75); }
-}
-
-@keyframes fact-conjunction {
-  0% { clip-path: inset(0 62% 0 0); filter: blur(1.5px); opacity: 0; transform: rotate(48deg) scale(0.72); }
-  58% { clip-path: inset(0); filter: blur(0); opacity: 0.9; transform: rotate(-12deg) scale(1); }
-  100% { clip-path: inset(0); filter: blur(0); opacity: 0; transform: rotate(-12deg) scale(1); }
-}
-
 .fact-explainer {
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
   color: color-mix(in srgb, var(--mineral-dim) 84%, transparent);
   display: -webkit-box;
-  font-size: clamp(0.62rem, 0.78vw, 0.76rem);
+  font-size: clamp(0.7rem, 0.88vw, 0.86rem);
   font-weight: 500;
-  line-height: 1.25;
+  line-height: 1.32;
   max-inline-size: 100%;
   overflow: hidden;
   text-wrap: pretty;
@@ -294,6 +299,18 @@ button { cursor: pointer; }
 #start-dialog[open]::backdrop { backdrop-filter: blur(2px); }
 #start-dialog form { display: grid; gap: 1rem; }
 
+#fact-dialog {
+  background: #0b0806;
+  border: 1px solid color-mix(in srgb, var(--gold) 44%, transparent);
+  box-shadow: 0 0 5rem color-mix(in srgb, #000 80%, transparent);
+  color: var(--mineral);
+  max-width: min(92vw, 27rem);
+  padding: clamp(1.5rem, 4vw, 2.75rem);
+}
+
+#fact-dialog::backdrop { background: rgb(0 0 0 / 76%); backdrop-filter: blur(2px); }
+#fact-dialog[open] { animation: dialog-open 600ms cubic-bezier(0.16, 1, 0.3, 1) both; }
+
 ::view-transition-old(timer-singularity) {
   animation-duration: 680ms;
   animation-fill-mode: both;
@@ -323,22 +340,23 @@ button { cursor: pointer; }
   to { clip-path: inset(0); filter: blur(0); opacity: 1; transform: scale(1); }
 }
 .dialog-kicker { color: var(--gold); font-size: 0.58rem; letter-spacing: 0.26em; margin: 0; text-transform: uppercase; }
-#dialog-title { font-family: 'Bodoni Moda', Baskerville, Georgia, serif; font-optical-sizing: auto; font-size: clamp(2rem, 5vw, 3.2rem); font-weight: 500; letter-spacing: -0.055em; line-height: 0.86; margin: 0.35rem 0 1.4rem; }
-#start-dialog label { color: var(--mineral-dim); font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; }
+#dialog-title, #fact-dialog-title { font-family: 'Bodoni Moda', Baskerville, Georgia, serif; font-optical-sizing: auto; font-size: clamp(2rem, 5vw, 3.2rem); font-weight: 500; letter-spacing: -0.055em; line-height: 0.86; margin: 0.35rem 0 1.4rem; }
+#start-dialog label {  color: var(--mineral-dim); font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; }
 #start-time { background: transparent; border: 0; border-bottom: 1px solid color-mix(in srgb, var(--mineral) 35%, transparent); border-radius: 0; color: var(--mineral); min-height: 3rem; outline: 0; padding: 0.4rem 0; }
 #start-time:focus { border-bottom-color: var(--gold); }
 .dialog-error { color: #ff8c66; font-size: 0.72rem; margin: 0; min-height: 1em; }
-.dialog-actions { display: flex; gap: 0.75rem; justify-content: flex-end; margin-top: 1rem; }
-.dialog-actions button { background: transparent; border: 1px solid color-mix(in srgb, var(--mineral) 34%, transparent); border-radius: 0; color: var(--mineral); font-size: 0.66rem; letter-spacing: 0.12em; padding: 0.8rem 1rem; text-transform: uppercase; }
-.dialog-actions button[type="submit"] { border-color: var(--gold); color: var(--gold); }
-.dialog-actions button:hover, .dialog-actions button:focus-visible { background: color-mix(in srgb, var(--gold) 13%, transparent); outline: 0; }
+.fact-dialog-copy { color: var(--mineral-dim); font-size: 0.9rem; line-height: 1.5; margin: 0; max-width: 34ch; }
+.dialog-actions { display: flex; flex-wrap: wrap; gap: 0.75rem; justify-content: flex-end; margin-top: 1rem; }
+.dialog-actions button, .dialog-actions a { background: transparent; border: 1px solid color-mix(in srgb, var(--mineral) 34%, transparent); border-radius: 0; color: var(--mineral); font-size: 0.66rem; letter-spacing: 0.12em; padding: 0.8rem 1rem; text-decoration: none; text-transform: uppercase; }
+.dialog-actions button[type="submit"], .dialog-actions a { border-color: var(--gold); color: var(--gold); }
+.dialog-actions button:hover, .dialog-actions button:focus-visible, .dialog-actions a:hover, .dialog-actions a:focus-visible { background: color-mix(in srgb, var(--gold) 13%, transparent); outline: 0; }
 
 @media (max-width: 700px) {
   :root { --ring-width: min(92vw, 31rem); }
   .wordmark { font-size: 0.55rem; }
   .fact { gap: 0.25rem; max-inline-size: 9rem; }
   .fact-value { font-size: 1.15rem; }
-  .fact-explainer { font-size: 0.58rem; }
+  .fact-explainer { font-size: 0.65rem; }
   .field-instruction { font-size: 0.48rem; white-space: nowrap; }
 }
 

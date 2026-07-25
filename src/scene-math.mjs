@@ -16,11 +16,6 @@ export function interpolateSceneTempo(tempo, isDilated, amount) {
   return tempo + (sceneTempo(isDilated) - tempo) * amount;
 }
 
-export function factArrivalPulse(arrivalAt, now, duration = 1_200) {
-  if (now < arrivalAt) return 0;
-  return Math.max(0, 1 - (now - arrivalAt) / duration);
-}
-
 function respawnGlyph(seed) {
   const angle = (seed % 1) * TAU;
   const radius = 1.18 + ((seed * 13) % 0.22);

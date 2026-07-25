@@ -1,3 +1,7 @@
 node_modules/
 .pi-subagents/
 .DS_Store
+
+# Local review exports and unselected social-image explorations.
+deliverables/
+docs/social-share/

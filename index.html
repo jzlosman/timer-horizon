@@ -12,9 +12,14 @@
     <link rel="stylesheet" href="./styles.css" />
   </head>
   <body class="no-webgl">
+    <audio id="background-audio" loop preload="auto">
+      <source src="./assets/background.mp3" type="audio/mpeg" />
+    </audio>
     <canvas id="field" aria-hidden="true"></canvas>
     <main id="experience" aria-label="Timer Horizon">
       <p class="wordmark" aria-hidden="true">Timer Horizon</p>
+      <button id="sound-toggle" class="sound-toggle" type="button" aria-pressed="false" aria-label="Turn background sound on">Sound off</button>
+      <button id="fact-offer" class="fact-offer" type="button" aria-haspopup="dialog">Offer a fact</button>
       <section id="facts" aria-label="Live rate facts"></section>
       <div class="horizon" aria-hidden="true"><div class="fallback-ring"></div></div>
       <button id="timer" class="timer" type="button" aria-haspopup="dialog" aria-label="Change the timer starting time">
@@ -36,6 +41,16 @@
           <button value="confirm" type="submit">Set horizon</button>
         </div>
       </form>
+    </dialog>
+
+    <dialog id="fact-dialog" aria-labelledby="fact-dialog-title">
+      <p class="dialog-kicker">Timer Horizon</p>
+      <h2 id="fact-dialog-title">Suggest a fact.</h2>
+      <p class="fact-dialog-copy">Post a fact you’d like included, with its rate, a trustworthy source, and your preferred credit.</p>
+      <div class="dialog-actions">
+        <button id="cancel-fact-offer" type="button">Return to the field</button>
+        <a id="fact-offer-link" href="https://x.com/intent/post?text=%40node_jz%20I%20have%20a%20fact%20suggestion%20for%20Timer%20Horizon%3A%0A%0AFact%3A%20%0ARate%3A%20%0ASource%3A%20%0ACredit%3A%20" target="_blank" rel="noopener noreferrer">Suggest on X</a>
+      </div>
     </dialog>
 
     <script type="module" src="./src/main.mjs"></script>

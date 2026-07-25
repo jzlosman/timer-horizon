@@ -1,7 +1,11 @@
 import assert from 'node:assert/strict';
+import { readFile } from 'node:fs/promises';
 import test from 'node:test';
 
-import { ensureFactCount, spawnFact } from '../src/fact-lifecycle.mjs';
+import * as lifecycle from '../src/fact-lifecycle.mjs';
+
+const { ensureFactCount, spawnFact } = lifecycle;
+const main = await readFile(new URL('../src/main.mjs', import.meta.url), 'utf8');
 
 const facts = [
   { id: 'a', rate: 1, period: 'second' },
@@ -23,4 +27,44 @@ test('the initial state fills four unique active facts', () => {
   assert.equal(active.length, 4);
   assert.equal(new Set(active.map(({ fact }) => fact.id)).size, 4);
   assert.equal(new Set(active.map(({ slot }) => slot)).size, 4);
+});
+
+test('staggered facts begin their journeys one at a time', () => {
+  const active = ensureFactCount(facts, [], 10_000, 4, () => 0);
+  assert.deepEqual(active.map(({ bornAt }) => bornAt), [10_000, 13_500, 17_000, 20_500]);
+  assert.ok(active.every(({ expiresAt, bornAt }) => expiresAt > bornAt));
+});
+
+test('the page waits until its last scheduled starter fact before automatic summons', () => {
+  assert.match(main, /let lastSummonAt = activeFacts\.at\(-1\)\?\.bornAt \?\? arrivedAt;/);
+});
+
+test('hovering a fact freezes its position, lifetime, and value clock', () => {
+  const active = { bornAt: 0, expiresAt: 300, fact: facts[0] };
+  assert.equal(typeof lifecycle.pauseFact, 'function');
+  assert.equal(typeof lifecycle.resumeFact, 'function');
+  assert.equal(typeof lifecycle.factTime, 'function');
+  assert.equal(typeof lifecycle.isFactExpired, 'function');
+
+  const paused = lifecycle.pauseFact(active, 100);
+  assert.equal(lifecycle.factTime(paused, 500), 100);
+  assert.equal(lifecycle.isFactExpired(paused, 1_000), false);
+
+  const resumed = lifecycle.resumeFact(paused, 500);
+  assert.equal(resumed.bornAt, 400);
+  assert.equal(resumed.expiresAt, 700);
+  assert.equal(lifecycle.isFactExpired(resumed, 699), false);
+  assert.equal(lifecycle.isFactExpired(resumed, 700), true);
+});
+
+test('the page wires pointer and keyboard focus to pause individual facts', () => {
+  assert.match(main, /element\.addEventListener\('pointerenter', syncFactPause\);/);
+  assert.match(main, /element\.addEventListener\('pointerleave', syncFactPause\);/);
+  assert.match(main, /element\.addEventListener\('focusin', syncFactPause\);/);
+  assert.match(main, /element\.addEventListener\('focusout', syncFactPause\);/);
+  assert.match(main, /const factNow = factTime\(active, now\);/);
+});
+
+test('future facts begin transparent before they enter the document', () => {
+  assert.match(main, /element\.style\.setProperty\('--fact-opacity', '0'\);\s+factsElement\.append\(element\);/);
 });
