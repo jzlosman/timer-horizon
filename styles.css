@@ -209,7 +209,7 @@ button { cursor: pointer; }
   display: grid;
   gap: 0.3rem;
   justify-items: center;
-  max-inline-size: min(20rem, 75vw);
+  inline-size: min(14rem, 75vw);
   opacity: var(--fact-opacity, 1);
   pointer-events: auto;
   position: absolute;

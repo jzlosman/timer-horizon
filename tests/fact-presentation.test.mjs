@@ -5,6 +5,7 @@ import test from 'node:test';
 import { factExplainer, formatFactValue, valueSlotWidth, valueUpdateInterval } from '../src/fact-presentation.mjs';
 
 const styles = await readFile(new URL('../styles.css', import.meta.url), 'utf8');
+const packagedStyles = await readFile(new URL('../wallpaper-engine/styles.css', import.meta.url), 'utf8');
 const main = await readFile(new URL('../src/main.mjs', import.meta.url), 'utf8');
 const packagedMain = await readFile(new URL('../wallpaper-engine/src/main.mjs', import.meta.url), 'utf8');
 
@@ -30,6 +31,10 @@ test('staggers numerical updates between three and five seconds', () => {
 });
 
 test('keeps fact explainers comfortably readable beneath their values', () => {
+  const fact = styles.match(/^\.fact\s*\{([\s\S]*?)^\}/m)?.[1];
+  const packagedFact = packagedStyles.match(/^\.fact\s*\{([\s\S]*?)^\}/m)?.[1];
+  assert.match(fact, /inline-size:\s*min\(14rem, 75vw\);/);
+  assert.match(packagedFact, /inline-size:\s*min\(14rem, 75vw\);/);
   const explainer = styles.match(/^\.fact-explainer\s*\{([\s\S]*?)^\}/m)?.[1];
   assert.ok(explainer, 'fact explainer rule is present');
   assert.match(explainer, /-webkit-line-clamp:\s*3;/);
