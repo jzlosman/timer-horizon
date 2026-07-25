@@ -246,18 +246,10 @@ button { cursor: pointer; }
   white-space: nowrap;
 }
 
-.fact-unit {
-  color: color-mix(in srgb, var(--mineral-dim) 86%, transparent);
-  font-size: clamp(0.54rem, 0.65vw, 0.66rem);
-  font-weight: 600;
-  line-height: 1;
-  text-align: start;
-  white-space: nowrap;
-}
 
 .fact-explainer {
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
+  -webkit-line-clamp: 3;
   color: color-mix(in srgb, var(--mineral-dim) 84%, transparent);
   display: -webkit-box;
   font-size: clamp(0.7rem, 0.88vw, 0.86rem);

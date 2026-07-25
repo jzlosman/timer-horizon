@@ -1,7 +1,7 @@
 import facts from './facts.json' with { type: 'json' };
 
 import { formatCalendarDuration, formatCalendarDurationParts, valueForElapsed } from './fact-engine.mjs';
-import { FACT_VALUE_SLOT_CHARS, factExplainer, factUnit, formatFactValue, valueUpdateInterval } from './fact-presentation.mjs';
+import { FACT_VALUE_SLOT_CHARS, factExplainer, formatFactValue, valueUpdateInterval } from './fact-presentation.mjs';
 import { eligibleFacts, ensureFactCount, factTime, isFactExpired, MAX_FACTS, MIN_FACTS, pauseFact, resumeFact, spawnFact } from './fact-lifecycle.mjs';
 import { createHorizonScene } from './horizon-scene.mjs';
 import { localInputValue, parsePastLocalTime } from './time-control.mjs';
@@ -108,12 +108,10 @@ function createFactNode(active) {
   factBody.className = 'fact-body';
   const value = document.createElement('span');
   value.className = 'fact-value';
-  const unit = document.createElement('span');
-  unit.className = 'fact-unit';
   const explainer = document.createElement('span');
   explainer.className = 'fact-explainer';
   element.style.setProperty('--fact-value-slot', `${FACT_VALUE_SLOT_CHARS}ch`);
-  factBody.append(value, unit);
+  factBody.append(value);
   element.append(factBody, explainer);
   element.style.setProperty('--fact-opacity', '0');
   factsElement.append(element);
@@ -141,7 +139,7 @@ function renderFacts(now) {
     const factNow = factTime(active, now);
     const position = factPosition(active, factNow);
     const [factBody, explainer] = node.children;
-    const [value, unit] = factBody.children;
+    const [value] = factBody.children;
     const lastUpdate = Number(node.dataset.valueUpdatedAt || 0);
     if (factNow - lastUpdate >= valueUpdateInterval(active.seed)) {
       const previousValue = value.textContent;
@@ -155,9 +153,8 @@ function renderFacts(now) {
         ], { duration: 420, easing: 'cubic-bezier(0.16, 1, 0.3, 1)' });
       }
     }
-    unit.textContent = factUnit(active.fact);
     explainer.textContent = factExplainer(active.fact);
-    node.setAttribute('aria-label', `${active.fact.label}: ${value.textContent} ${active.fact.unit}`);
+    node.setAttribute('aria-label', `${value.textContent} ${active.fact.label}`);
     node.style.left = `${position.x}%`;
     node.style.top = `${position.y}%`;
     node.dataset.side = position.side;

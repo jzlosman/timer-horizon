@@ -12,8 +12,7 @@ test('ships one hundred sixty varied, rate-based facts with stable display metad
   for (const fact of facts) {
     assert.match(fact.id, /^[a-z0-9-]+$/);
     assert.ok(fact.label.length > 0);
-    assert.ok(fact.unit.length > 0);
-    assert.notEqual(fact.unit, 'times');
+    assert.equal('unit' in fact, false);
     assert.ok(fact.category.length > 0);
     assert.ok(Number.isFinite(fact.rate) && fact.rate > 0);
     assert.ok(periods.has(fact.period));
@@ -23,6 +22,7 @@ test('ships one hundred sixty varied, rate-based facts with stable display metad
     assert.ok(fact.sourceLabel === null || fact.sourceLabel.length > 0);
   }
 
+  assert.doesNotMatch(JSON.stringify(facts), /tonnes/i);
   assert.ok(new Set(facts.map(({ category }) => category)).size >= 6);
   assert.ok(facts.filter(({ sourceUrl }) => sourceUrl).length >= 120);
   assert.ok(facts.filter(({ minimumElapsedSeconds }) => minimumElapsedSeconds).length >= 7);

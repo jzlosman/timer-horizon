@@ -8,9 +8,6 @@ export function factExplainer({ label }) {
   return label;
 }
 
-export function factUnit({ unit }) {
-  return unit;
-}
 
 export function valueUpdateInterval(seed) {
   return 3_000 + Math.floor(seed * 2_000);

@@ -2,13 +2,16 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import test from 'node:test';
 
-import { factExplainer, factUnit, formatFactValue, valueSlotWidth, valueUpdateInterval } from '../src/fact-presentation.mjs';
+import { factExplainer, formatFactValue, valueSlotWidth, valueUpdateInterval } from '../src/fact-presentation.mjs';
 
 const styles = await readFile(new URL('../styles.css', import.meta.url), 'utf8');
+const main = await readFile(new URL('../src/main.mjs', import.meta.url), 'utf8');
+const packagedMain = await readFile(new URL('../wallpaper-engine/src/main.mjs', import.meta.url), 'utf8');
 
-test('renders each fact as one stable numerical body with a compact explainer', () => {
-  assert.equal(factExplainer({ label: 'Wikipedia has received', unit: 'edits' }), 'Wikipedia has received');
-  assert.equal(factUnit({ unit: 'km through the Milky Way' }), 'km through the Milky Way');
+test('renders each fact as a bare value with one wrapping statement', () => {
+  assert.equal(factExplainer({ label: 'lightning strikes on Earth' }), 'lightning strikes on Earth');
+  assert.doesNotMatch(main, /fact-unit/);
+  assert.doesNotMatch(packagedMain, /fact-unit/);
   assert.equal(valueSlotWidth('999'), valueSlotWidth('1,000'));
 });
 
@@ -29,6 +32,7 @@ test('staggers numerical updates between three and five seconds', () => {
 test('keeps fact explainers comfortably readable beneath their values', () => {
   const explainer = styles.match(/^\.fact-explainer\s*\{([\s\S]*?)^\}/m)?.[1];
   assert.ok(explainer, 'fact explainer rule is present');
+  assert.match(explainer, /-webkit-line-clamp:\s*3;/);
   assert.match(explainer, /font-size:\s*clamp\(0\.7rem, 0\.88vw, 0\.86rem\);/);
   assert.match(styles, /@media \(max-width: 700px\) \{[\s\S]*?\.fact-explainer \{ font-size: 0\.65rem; \}/);
 });
