@@ -1,6 +1,8 @@
 node_modules/
 .pi-subagents/
+.firecrawl/
 .DS_Store
+dist/
 
 # Local review exports and unselected social-image explorations.
 deliverables/
