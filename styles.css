@@ -241,7 +241,7 @@ button { cursor: pointer; }
   letter-spacing: -0.03em;
   line-height: 1;
   min-inline-size: 0;
-  text-align: end;
+  text-align: center;
   text-shadow: 0 0 1.8rem color-mix(in srgb, var(--ember) 30%, transparent);
   white-space: nowrap;
 }

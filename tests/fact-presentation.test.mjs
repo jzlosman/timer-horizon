@@ -41,3 +41,12 @@ test('keeps fact explainers comfortably readable beneath their values', () => {
   assert.match(explainer, /font-size:\s*clamp\(0\.7rem, 0\.88vw, 0\.86rem\);/);
   assert.match(styles, /@media \(max-width: 700px\) \{[\s\S]*?\.fact-explainer \{ font-size: 0\.65rem; \}/);
 });
+
+test('centers each fact value over its explainer without shifting as it updates', () => {
+  for (const source of [styles, packagedStyles]) {
+    const value = source.match(/^\.fact-value\s*\{([\s\S]*?)^\}/m)?.[1];
+    assert.ok(value, 'fact value rule is present');
+    assert.match(value, /inline-size:\s*var\(--fact-value-slot, 6ch\);/);
+    assert.match(value, /text-align:\s*center;/);
+  }
+});
