@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import test from 'node:test';
 
-const origin = 'https://timer-horizon.jeremy-134.workers.dev';
+const origin = 'https://timerhorizon.com';
 const [html, packageJson, wranglerSource] = await Promise.all([
   readFile(new URL('../index.html', import.meta.url), 'utf8'),
   readFile(new URL('../package.json', import.meta.url), 'utf8').then(JSON.parse),
@@ -17,6 +17,9 @@ test('builds the static release directory for the deployed Worker', () => {
   assert.equal(wrangler.compatibility_date, '2026-07-25');
   assert.equal(wrangler.assets.directory, './dist');
   assert.equal(wrangler.workers_dev, true);
+  assert.ok(Array.isArray(wrangler.routes));
+  assert.equal(wrangler.routes[0].pattern, 'timerhorizon.com/*');
+  assert.equal(wrangler.routes[0].zone_name, 'timerhorizon.com');
 });
 
 test('declares a complete social preview at the production URL', () => {

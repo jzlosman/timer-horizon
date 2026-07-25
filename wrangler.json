@@ -3,6 +3,12 @@
   "name": "timer-horizon",
   "compatibility_date": "2026-07-25",
   "workers_dev": true,
+  "routes": [
+    {
+      "pattern": "timerhorizon.com/*",
+      "zone_name": "timerhorizon.com"
+    }
+  ],
   "assets": {
     "directory": "./dist"
   }
